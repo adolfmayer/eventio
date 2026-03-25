@@ -1,11 +1,21 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { SignOutButton } from "@/features/auth/sign-out-button";
 
 export const metadata = {
   title: "My Profile",
 };
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data.user) {
+    redirect("/login");
+  }
+
   return (
     <main className="min-h-screen px-4 py-8 sm:px-6">
       <Card className="mx-auto grid w-full max-w-4xl gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_2fr]">
@@ -44,16 +54,21 @@ export default function ProfilePage() {
           <div className="mt-6 rounded-card border border-stroke bg-surface p-4 text-sm text-muted">
             <p>
               <span className="font-semibold text-text">Email:</span>{" "}
-              ada@example.com
+              {data.user.email ?? "—"}
             </p>
             <p className="mt-2">
-              <span className="font-semibold text-text">Location:</span>{" "}
-              Bratislava
+              <span className="font-semibold text-text">User ID:</span>{" "}
+              {data.user.id}
             </p>
           </div>
-          <Button className="mt-6" variant="secondary" size="lg">
-            Edit Profile
-          </Button>
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Button variant="secondary" size="lg">
+              Edit Profile
+            </Button>
+            <SignOutButton variant="danger" size="lg">
+              Sign out
+            </SignOutButton>
+          </div>
         </div>
       </Card>
     </main>

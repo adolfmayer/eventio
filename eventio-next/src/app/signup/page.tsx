@@ -1,14 +1,20 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+
+import { SignupForm } from "@/features/auth/signup-form";
 
 export const metadata = {
   title: "Sign Up",
 };
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase.auth.getUser();
+  if (data.user) redirect("/dashboard");
+
   return (
     <main className="flex min-h-screen items-center px-4 py-12 sm:px-6">
       <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2">
@@ -34,23 +40,7 @@ export default function SignUpPage() {
           <p className="mt-2 text-sm text-muted">
             Set up your account in less than a minute.
           </p>
-          <form className="mt-6 space-y-4">
-            <label className="block text-sm font-medium text-text">
-              Full Name
-              <Input className="mt-1" placeholder="Ada Lovelace" />
-            </label>
-            <label className="block text-sm font-medium text-text">
-              Email
-              <Input className="mt-1" type="email" placeholder="ada@example.com" />
-            </label>
-            <label className="block text-sm font-medium text-text">
-              Password
-              <Input className="mt-1" type="password" placeholder="********" />
-            </label>
-            <Button className="w-full" size="lg">
-              Create Account
-            </Button>
-          </form>
+          <SignupForm />
           <p className="mt-6 text-center text-sm text-muted">
             Already have an account?
             <Link className="ml-1 font-semibold text-dangerStrong" href="/login">

@@ -1,7 +1,8 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { LoginForm } from "@/features/auth/login-form";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Log In",
@@ -28,7 +29,11 @@ function LogoMark({ className }: { className?: string }) {
   );
 }
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase.auth.getUser();
+  if (data.user) redirect("/dashboard");
+
   return (
     <main className="min-h-screen bg-surface">
       <div className="fixed left-0 top-0 z-50 px-6 py-7 sm:px-10 lg:hidden">
@@ -77,28 +82,7 @@ export default function LoginPage() {
                   </p>
                 </div>
 
-                <form className="mt-6 w-full space-y-4">
-                  <label className="block text-sm leading-6 text-muted lg:text-[18px]">
-                    Email
-                    <Input
-                      className="mt-1"
-                      type="email"
-                      defaultValue="tomas.vranek@strv.co"
-                    />
-                  </label>
-                  <label className="block text-sm leading-6 text-muted lg:text-[18px]">
-                    Password
-                    <Input
-                      className="mt-1"
-                      type="password"
-                      defaultValue=".........."
-                    />
-                  </label>
-
-                  <Button className="mt-2 h-[57px] w-full rounded-control text-[16px] font-normal uppercase tracking-[1px]">
-                    Sign in
-                  </Button>
-                </form>
+                <LoginForm />
               </div>
             </div>
           </div>
