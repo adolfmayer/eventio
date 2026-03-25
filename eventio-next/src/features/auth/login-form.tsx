@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type LoginFormState = {
@@ -17,10 +18,11 @@ type LoginFormState = {
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const [state, setState] = React.useState<LoginFormState>({
-    email: "tomas.vranek@strv.co",
-    password: "..........",
+    email: "",
+    password: "",
     isSubmitting: false,
     error: null,
   });
@@ -46,40 +48,75 @@ export function LoginForm() {
   }
 
   return (
-    <form className="mt-6 w-full space-y-4" onSubmit={onSubmit}>
-      <label className="block text-sm leading-6 text-muted lg:text-[18px]">
-        Email
-        <Input
-          className="mt-1"
+    <form className="mt-[48px] w-full lg:mt-[80px]" onSubmit={onSubmit}>
+      <label className="block">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          Email
+        </span>
+        <input
+          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
           type="email"
           autoComplete="email"
           value={state.email}
           onChange={(e) => setState((s) => ({ ...s, email: e.target.value }))}
-          required
-        />
-      </label>
-      <label className="block text-sm leading-6 text-muted lg:text-[18px]">
-        Password
-        <Input
-          className="mt-1"
-          type="password"
-          autoComplete="current-password"
-          value={state.password}
-          onChange={(e) => setState((s) => ({ ...s, password: e.target.value }))}
+          placeholder=""
           required
         />
       </label>
 
+      <label className="mt-10 block lg:mt-8">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          Password
+        </span>
+        <div className="relative mt-2 h-8">
+          <input
+            className="h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 pr-8 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            value={state.password}
+            onChange={(e) => setState((s) => ({ ...s, password: e.target.value }))}
+            placeholder=""
+            required
+          />
+          <button
+            type="button"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-0 top-0 inline-flex h-6 w-6 items-center justify-center"
+          >
+            <Image
+              src="/eventio/auth/icon-show.svg"
+              alt=""
+              width={24}
+              height={24}
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+      </label>
+
+      <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3] lg:hidden">
+        Don&apos;t have account?
+        <Link
+          href="/signup"
+          className="ml-1 font-semibold tracking-[1px] text-text hover:underline"
+        >
+          SIGN UP
+        </Link>
+      </p>
+
       {state.error ? (
-        <p className="text-sm text-dangerStrong">{state.error}</p>
+        <p className="mt-2 text-[14px] leading-6 text-danger">
+          {state.error}
+        </p>
       ) : null}
 
       <Button
-        className="mt-2 h-[57px] w-full rounded-control text-[16px] font-normal uppercase tracking-[1px]"
+        className="mt-[88px] h-[57px] w-full rounded-[4px] text-[16px] font-normal uppercase tracking-[1px] hover:bg-brandStrong lg:mt-16"
         type="submit"
         disabled={state.isSubmitting}
       >
-        {state.isSubmitting ? "Signing in..." : "Sign in"}
+        {state.isSubmitting ? "Loading..." : "Sign in"}
       </Button>
     </form>
   );

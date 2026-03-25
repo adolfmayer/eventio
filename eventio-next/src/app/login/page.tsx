@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { LoginForm } from "@/features/auth/login-form";
@@ -35,55 +36,61 @@ export default async function LoginPage() {
   if (data.user) redirect("/dashboard");
 
   return (
-    <main className="min-h-screen bg-surface">
-      <div className="fixed left-0 top-0 z-50 px-6 py-7 sm:px-10 lg:hidden">
-        <LogoMark className="h-6 w-6 text-text" />
-      </div>
+    <main className="min-h-screen bg-white">
+      <aside className="fixed left-0 top-0 hidden h-screen w-[480px] overflow-hidden bg-text lg:block">
+        <div className="absolute inset-0">
+          <Image
+            src="/eventio/auth/login-hero.avif"
+            alt=""
+            fill
+            className="object-cover opacity-[0.11]"
+            priority
+          />
+        </div>
+        <div className="absolute left-[61px] top-[39px] z-10 text-white">
+          <LogoMark />
+        </div>
+        <div className="absolute left-1/2 top-[calc(100vh-244px)] z-10 w-[310px] -translate-x-1/2 text-center">
+          <p className="font-(--font-eventio-serif) text-[36px] leading-[42px] text-white">
+            &quot;Great, kid. Don&apos;t get cocky!&quot;
+          </p>
+          <div className="mx-auto mt-5 h-[2px] w-[12px] bg-brand" />
+          <p className="mt-3 text-[18px] leading-6 text-white/60">
+            Han Solo
+          </p>
+        </div>
+      </aside>
 
-      <div className="fixed right-0 top-0 z-50 px-6 py-7 sm:px-10">
-        <p className="text-sm leading-6 text-muted">
-          Don&apos;t have account?
-          <Link
-            href="/signup"
-            className="ml-1 text-sm font-semibold leading-6 text-text hover:underline"
-          >
-            SIGN UP
-          </Link>
-        </p>
-      </div>
-
-      <div className="min-h-screen w-full lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)]">
-        <aside className="relative hidden min-h-screen overflow-hidden bg-text lg:block">
-          <div className="absolute inset-0 opacity-[0.11] bg-[radial-gradient(circle_at_top_left,white_0%,transparent_65%)]" />
-          <div className="absolute left-[61px] top-[39px] text-white">
-            <LogoMark />
+      <div className="min-h-screen w-full lg:pl-[480px]">
+        <section className="relative min-h-screen px-6">
+          <div className="absolute left-6 top-[29px] text-text lg:hidden">
+            <LogoMark className="h-[22px] w-[23px]" />
           </div>
-          <div className="absolute bottom-[86px] left-1/2 w-[310px] -translate-x-1/2 text-center">
-            <p className="font-[var(--font-eventio-serif)] text-[36px] leading-[42px] text-white">
-              &quot;Great, kid. Don&apos;t get cocky!&quot;
-            </p>
-            <div className="mx-auto mt-5 h-[2px] w-[12px] bg-brand" />
-            <p className="mt-3 text-[18px] leading-6 text-white/60">
-              Han Solo
+
+          <div className="fixed right-[39px] top-10 z-20 hidden lg:block">
+            <p className="text-[14px] leading-6 text-[#C9CED3]">
+              Don&apos;t have account?
+              <Link
+                href="/signup"
+                className="ml-1 font-semibold tracking-[1px] text-text hover:underline"
+              >
+                SIGN UP
+              </Link>
             </p>
           </div>
-        </aside>
 
-        <section className="relative min-h-screen px-6 sm:px-10 lg:px-0">
-          <div className="relative mx-auto min-h-screen w-full max-w-xl lg:px-12 xl:px-16">
-            <div className="grid min-h-screen place-items-center">
-              <div className="mx-auto w-full max-w-sm lg:mx-0">
-                <div className="text-center lg:text-left">
-                  <h1 className="text-[22px] font-normal leading-[48px] text-text lg:text-[28px]">
-                    Sign in to Eventio.
-                  </h1>
-                  <p className="text-sm leading-6 text-muted lg:text-[18px]">
-                    Enter your details below.
-                  </p>
-                </div>
-
-                <LoginForm />
+          <div className="mx-auto grid min-h-screen w-full max-w-[320px] place-items-center lg:max-w-[480px]">
+            <div className="w-full">
+              <div className="text-center lg:text-left">
+                <h1 className="text-[22px] font-normal leading-[48px] text-text lg:text-[28px]">
+                  Sign in to Eventio.
+                </h1>
+                <p className="text-[14px] leading-6 text-[#949EA8] lg:text-[18px]">
+                  Enter your details below.
+                </p>
               </div>
+
+              <LoginForm />
             </div>
           </div>
         </section>
