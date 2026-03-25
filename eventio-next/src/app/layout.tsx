@@ -1,0 +1,38 @@
+import type { Metadata } from "next";
+import { Hind, Playfair_Display } from "next/font/google";
+import "./globals.css";
+
+const eventioSans = Hind({
+  variable: "--font-eventio-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const eventioSerif = Playfair_Display({
+  variable: "--font-eventio-serif",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+export const metadata: Metadata = {
+  title: {
+    default: "Eventio",
+    template: "%s · Eventio",
+  },
+  description: "A platform that allows registered users to sign up for and create events.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${eventioSans.variable} ${eventioSerif.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col text-text">{children}</body>
+    </html>
+  );
+}
