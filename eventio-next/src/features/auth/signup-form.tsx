@@ -33,7 +33,7 @@ export function SignupForm() {
     setState((s) => ({ ...s, isSubmitting: true, error: null, success: null }));
 
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: state.email,
       password: state.password,
       options: {
@@ -57,7 +57,9 @@ export function SignupForm() {
       success: "Account created. If required, check your email to confirm.",
     }));
 
-    router.replace("/dashboard");
+    // If email confirmation is enabled, `data.session` will often be null.
+    // In that case, redirecting to protected routes just bounces back to /login.
+    router.replace(data.session ? "/dashboard" : "/login");
     router.refresh();
   }
 

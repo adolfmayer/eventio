@@ -2,12 +2,64 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { joinEventAction, leaveEventAction } from "@/features/events/actions";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Dashboard Detail",
 };
 
-export default function DashboardDetailPage() {
+export default async function DashboardDetailPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ id?: string; error?: string }>;
+}) {
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) redirect("/login?redirectTo=/dashboard-detail");
+
+  const params = (await searchParams) ?? {};
+  const eventId = params.id;
+
+  if (!eventId) {
+    const { data: first } = await supabase
+      .from("events")
+      .select("id")
+      .order("starts_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (!first?.id) redirect("/dashboard");
+    redirect(`/dashboard-detail?id=${encodeURIComponent(first.id)}`);
+  }
+
+  const [{ data: event, error: eventError }, { count: attendeesCount }, { data: attendeeRow }] =
+    await Promise.all([
+      supabase
+        .from("events")
+        .select("id,title,description,location,starts_at,capacity,owner_id")
+        .eq("id", eventId)
+        .single(),
+      supabase
+        .from("event_attendees")
+        .select("*", { count: "exact", head: true })
+        .eq("event_id", eventId),
+      supabase
+        .from("event_attendees")
+        .select("event_id")
+        .eq("event_id", eventId)
+        .eq("user_id", auth.user.id)
+        .maybeSingle(),
+    ]);
+
+  if (eventError || !event) {
+    redirect(`/dashboard?error=${encodeURIComponent(eventError?.message ?? "Event not found")}`);
+  }
+
+  const isOwner = event.owner_id === auth.user.id;
+  const isJoined = Boolean(attendeeRow);
+
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto w-full max-w-6xl">
@@ -36,20 +88,46 @@ export default function DashboardDetailPage() {
             Event detail
           </p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text sm:text-3xl">
-            Summer Product Festival
+            {event.title}
           </h1>
           <p className="mt-3 text-sm text-muted sm:text-base">
-            A full day of talks, networking, and hands-on workshops from local
-            product teams.
+            {event.description ?? "—"}
           </p>
+          {params.error ? (
+            <p className="mt-4 text-sm text-dangerStrong">{params.error}</p>
+          ) : null}
           <div className="mt-6 flex flex-wrap gap-2">
-            <Button size="sm">Join Event</Button>
-            <Button size="sm" variant="secondary">
-              Edit Event
-            </Button>
-            <Button size="sm" variant="secondary">
+            {isJoined ? (
+              <form action={leaveEventAction}>
+                <input type="hidden" name="eventId" value={event.id} />
+                <Button size="sm" variant="secondary" type="submit">
+                  Leave Event
+                </Button>
+              </form>
+            ) : (
+              <form action={joinEventAction}>
+                <input type="hidden" name="eventId" value={event.id} />
+                <Button size="sm" type="submit">
+                  Join Event
+                </Button>
+              </form>
+            )}
+
+            {isOwner ? (
+              <Link
+                href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
+                className="inline-flex h-9 items-center justify-center rounded-control border border-stroke bg-surface px-3 text-sm font-semibold text-text shadow-sm hover:bg-surfaceAlt"
+              >
+                Edit Event
+              </Link>
+            ) : null}
+
+            <Link
+              href="/dashboard"
+              className="inline-flex h-9 items-center justify-center rounded-control border border-stroke bg-surface px-3 text-sm font-semibold text-text shadow-sm hover:bg-surfaceAlt"
+            >
               Back to Dashboard
-            </Button>
+            </Link>
           </div>
           <div className="mt-7 grid gap-3 sm:grid-cols-2">
             <div className="rounded-card border border-stroke bg-surfaceAlt p-4">
@@ -65,7 +143,8 @@ export default function DashboardDetailPage() {
                 Capacity
               </p>
               <p className="mt-2 text-sm text-text">
-                124 / 150 spots reserved.
+                {attendeesCount ?? 0}
+                {event.capacity ? ` / ${event.capacity}` : ""} spots reserved.
               </p>
             </div>
           </div>
@@ -74,10 +153,10 @@ export default function DashboardDetailPage() {
         <Card className="p-5">
           <h2 className="text-lg font-semibold text-text">Event facts</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted">
-            <li>Date: 14 Aug 2026</li>
-            <li>Time: 17:00</li>
-            <li>Location: Vienna</li>
-            <li>Attendees: 124</li>
+            <li>Date: {new Date(event.starts_at).toLocaleDateString()}</li>
+            <li>Time: {new Date(event.starts_at).toLocaleTimeString()}</li>
+            <li>Location: {event.location ?? "—"}</li>
+            <li>Attendees: {attendeesCount ?? 0}</li>
           </ul>
         </Card>
       </div>

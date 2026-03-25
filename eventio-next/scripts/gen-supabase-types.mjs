@@ -14,11 +14,22 @@ if (!projectId) {
 const outPath = resolve("src/types/database.ts");
 mkdirSync(dirname(outPath), { recursive: true });
 
-const stdout = execFileSync(
-  "npx",
-  ["--yes", "supabase", "gen", "types", "typescript", "--project-id", projectId, "--schema", "public"],
-  { encoding: "utf8" },
-);
+const args = [
+  "--yes",
+  "supabase",
+  "gen",
+  "types",
+  "typescript",
+  "--project-id",
+  projectId,
+  "--schema",
+  "public",
+];
+
+const stdout =
+  process.platform === "win32"
+    ? execFileSync("cmd", ["/c", ["npx", ...args].join(" ")], { encoding: "utf8" })
+    : execFileSync("npx", args, { encoding: "utf8" });
 
 writeFileSync(outPath, stdout, "utf8");
 

@@ -4,24 +4,47 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Dashboard Detail Edit",
 };
 
-export default function DashboardDetailEditPage() {
+export default async function DashboardDetailEditPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ id?: string }>;
+}) {
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) redirect("/login?redirectTo=/dashboard-detail-edit");
+
+  const params = (await searchParams) ?? {};
+  const eventId = params.id;
+  if (!eventId) redirect("/dashboard");
+
+  const { data: event, error } = await supabase
+    .from("events")
+    .select("id,title,description,location,starts_at,owner_id")
+    .eq("id", eventId)
+    .single();
+
+  if (error || !event) redirect("/dashboard");
+  if (event.owner_id !== auth.user.id) redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+
   return (
     <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-4 inline-flex rounded-control border border-stroke bg-surface p-1 text-xs font-semibold sm:text-sm">
           <Link
-            href="/dashboard-detail"
+            href={`/dashboard-detail?id=${encodeURIComponent(eventId)}`}
             className="rounded-control px-3 py-2 text-muted hover:bg-surfaceAlt"
           >
             03-1-1-Detail
           </Link>
           <Link
-            href="/dashboard-detail-joined"
+            href={`/dashboard-detail-joined?id=${encodeURIComponent(eventId)}`}
             className="rounded-control px-3 py-2 text-muted hover:bg-surfaceAlt"
           >
             03-1-2-Detail-Joined
@@ -45,22 +68,26 @@ export default function DashboardDetailEditPage() {
               Event name
               <Input
                 className="mt-1"
-                defaultValue="Summer Product Festival"
+                defaultValue={event.title}
               />
             </label>
             <label className="block text-sm font-medium text-text">
               Date
-              <Input className="mt-1" defaultValue="14/08/2026" />
+              <Input
+                className="mt-1"
+                defaultValue={new Date(event.starts_at).toLocaleDateString()}
+              />
             </label>
             <label className="block text-sm font-medium text-text">
               Time
-              <Input className="mt-1" defaultValue="17:00" />
+              <Input
+                className="mt-1"
+                defaultValue={new Date(event.starts_at).toLocaleTimeString()}
+              />
             </label>
             <label className="block text-sm font-medium text-text sm:col-span-2">
               Description
-              <Textarea className="mt-1">
-                A full day of talks, networking, and workshops.
-              </Textarea>
+              <Textarea className="mt-1" defaultValue={event.description ?? ""} />
             </label>
             <div className="sm:col-span-2 flex flex-wrap gap-2">
               <Button size="sm">Save changes</Button>
