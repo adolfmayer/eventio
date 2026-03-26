@@ -106,7 +106,7 @@ export default async function DashboardDetailEditPage({
           </div>
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
-            <article className="rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[464px]">
+            <article className="rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px]">
               <form id="edit-event-form" action={updateEventAction} className="p-6 lg:p-8">
                 <input type="hidden" name="eventId" value={event.id} />
                 {paramsError ? (
