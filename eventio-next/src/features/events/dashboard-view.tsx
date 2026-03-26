@@ -501,7 +501,7 @@ export function DashboardView({
 
       <Link
         href="/create-new"
-        className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-[#565D5A]"
+        className="fixed bottom-8 right-8 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-[#565D5A]"
         aria-label="Create new event"
       >
         <PlusIcon className="text-white" />
