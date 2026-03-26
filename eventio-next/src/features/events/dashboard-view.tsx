@@ -238,7 +238,7 @@ function EventCard({
 
   // grid
   return (
-    <div className="relative h-[296px] w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:w-[390px]">
+    <div className="relative h-[296px] w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
       <div className="flex h-full flex-col p-8">
         <p className="text-[14px] font-normal leading-6 text-[#CACDD0]">
           {dateText}
@@ -462,7 +462,7 @@ export function DashboardView({
           ) : null}
 
           {viewMode === 'grid' ? (
-            <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-[repeat(3,390px)] lg:gap-x-[15px] lg:gap-y-4">
+            <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-2 lg:gap-x-4 xl:grid-cols-[repeat(auto-fit,minmax(390px,390px))] xl:justify-start xl:gap-x-[15px] xl:gap-y-4">
               {visibleEvents.map((event) => (
                 <EventCard
                   key={event.id}
