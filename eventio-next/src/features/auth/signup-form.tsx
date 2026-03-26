@@ -14,7 +14,14 @@ type SignupFormState = {
   password: string;
   repeatPassword: string;
   isSubmitting: boolean;
-  error: string | null;
+  errors: {
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+    password: string | null;
+    repeatPassword: string | null;
+    form: string | null;
+  };
 };
 
 export function SignupForm() {
@@ -27,37 +34,66 @@ export function SignupForm() {
     password: "",
     repeatPassword: "",
     isSubmitting: false,
-    error: null,
+    errors: {
+      firstName: null,
+      lastName: null,
+      email: null,
+      password: null,
+      repeatPassword: null,
+      form: null,
+    },
   });
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const firstName = state.firstName.trim();
     const lastName = state.lastName.trim();
+    const nextErrors: SignupFormState["errors"] = {
+      firstName: null,
+      lastName: null,
+      email: null,
+      password: null,
+      repeatPassword: null,
+      form: null,
+    };
 
-    if (!firstName || !lastName) {
-      setState((s) => ({
-        ...s,
-        error: "First name and last name are required.",
-      }));
-      return;
+    if (!firstName) {
+      nextErrors.firstName = "First name is required.";
+    }
+    if (!lastName) {
+      nextErrors.lastName = "Last name is required.";
+    }
+    if (!state.email.trim()) {
+      nextErrors.email = "Email is required.";
     }
     if (state.password.length < 6) {
-      setState((s) => ({
-        ...s,
-        error: "Password must be at least 6 characters.",
-      }));
-      return;
+      nextErrors.password = "Password must be at least 6 characters.";
     }
     if (state.password !== state.repeatPassword) {
-      setState((s) => ({
-        ...s,
-        error: "Passwords do not match.",
-      }));
+      nextErrors.repeatPassword = "Passwords do not match.";
+    }
+    if (state.repeatPassword.length === 0) {
+      nextErrors.repeatPassword = "Repeat password is required.";
+    }
+
+    const hasErrors = Object.values(nextErrors).some(Boolean);
+    if (hasErrors) {
+      setState((s) => ({ ...s, errors: nextErrors }));
       return;
     }
 
-    setState((s) => ({ ...s, isSubmitting: true, error: null }));
+    setState((s) => ({
+      ...s,
+      isSubmitting: true,
+      errors: {
+        firstName: null,
+        lastName: null,
+        email: null,
+        password: null,
+        repeatPassword: null,
+        form: null,
+      },
+    }));
 
     const supabase = createSupabaseBrowserClient();
     const fullName = `${firstName} ${lastName}`.trim();
@@ -74,7 +110,11 @@ export function SignupForm() {
     });
 
     if (error) {
-      setState((s) => ({ ...s, isSubmitting: false, error: error.message }));
+      setState((s) => ({
+        ...s,
+        isSubmitting: false,
+        errors: { ...s.errors, form: error.message },
+      }));
       return;
     }
 
@@ -83,7 +123,7 @@ export function SignupForm() {
   }
 
   return (
-    <form className="mt-[48px] w-full lg:mt-[64px]" onSubmit={onSubmit}>
+    <form className="mt-[48px] w-full lg:mt-[64px]" onSubmit={onSubmit} noValidate>
       <label className="block">
         <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
           First name
@@ -98,6 +138,11 @@ export function SignupForm() {
           autoComplete="given-name"
           required
         />
+        {state.errors.firstName ? (
+          <p className="mt-2 text-[14px] leading-6 text-danger">
+            {state.errors.firstName}
+          </p>
+        ) : null}
       </label>
 
       <label className="mt-10 block lg:mt-8">
@@ -112,6 +157,11 @@ export function SignupForm() {
           autoComplete="family-name"
           required
         />
+        {state.errors.lastName ? (
+          <p className="mt-2 text-[14px] leading-6 text-danger">
+            {state.errors.lastName}
+          </p>
+        ) : null}
       </label>
 
       <label className="mt-10 block lg:mt-8">
@@ -126,6 +176,11 @@ export function SignupForm() {
           autoComplete="email"
           required
         />
+        {state.errors.email ? (
+          <p className="mt-2 text-[14px] leading-6 text-danger">
+            {state.errors.email}
+          </p>
+        ) : null}
       </label>
 
       <label className="mt-10 block lg:mt-8">
@@ -141,6 +196,11 @@ export function SignupForm() {
           minLength={6}
           required
         />
+        {state.errors.password ? (
+          <p className="mt-2 text-[14px] leading-6 text-danger">
+            {state.errors.password}
+          </p>
+        ) : null}
       </label>
 
       <label className="mt-10 block lg:mt-8">
@@ -157,6 +217,11 @@ export function SignupForm() {
           autoComplete="new-password"
           required
         />
+        {state.errors.repeatPassword ? (
+          <p className="mt-2 text-[14px] leading-6 text-danger">
+            {state.errors.repeatPassword}
+          </p>
+        ) : null}
       </label>
 
       <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3] lg:hidden">
@@ -169,7 +234,11 @@ export function SignupForm() {
         </Link>
       </p>
 
-      {state.error ? <p className="mt-2 text-[14px] leading-6 text-danger">{state.error}</p> : null}
+      {state.errors.form ? (
+        <p className="mt-2 text-[14px] leading-6 text-danger">
+          {state.errors.form}
+        </p>
+      ) : null}
 
       <Button
         className="mt-[64px] h-[57px] w-full rounded-[4px] text-[16px] font-normal uppercase tracking-[1px] hover:bg-brandStrong lg:mt-16"
