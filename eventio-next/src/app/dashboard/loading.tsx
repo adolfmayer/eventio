@@ -1,5 +1,25 @@
-import Image from "next/image";
 import Link from "next/link";
+
+function PlusIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
 export default function DashboardLoading() {
   return (
@@ -39,13 +59,7 @@ export default function DashboardLoading() {
       </div>
 
       <div className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)]">
-        <Image
-          src="/eventio/dashboard/icons/icon-plus.svg"
-          alt=""
-          width={14}
-          height={14}
-          aria-hidden="true"
-        />
+        <PlusIcon className="text-white" />
       </div>
     </main>
   );
