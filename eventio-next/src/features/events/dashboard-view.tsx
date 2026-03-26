@@ -11,6 +11,11 @@ import { joinEventAction, leaveEventAction } from '@/features/events/actions';
 
 type ViewMode = 'grid' | 'list';
 type FilterMode = 'all' | 'future' | 'past';
+const FILTER_LABELS: Record<FilterMode, string> = {
+  all: 'ALL EVENTS',
+  future: 'FUTURE EVENTS',
+  past: 'PAST EVENTS',
+};
 
 type DashboardUser = {
   id: string;
@@ -300,6 +305,8 @@ export function DashboardView({
 }: DashboardViewProps) {
   const [viewMode, setViewMode] = React.useState<ViewMode>('grid');
   const [filterMode, setFilterMode] = React.useState<FilterMode>('all');
+  const [filterOpen, setFilterOpen] = React.useState(false);
+  const filterMenuRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     try {
@@ -317,6 +324,31 @@ export function DashboardView({
       // ignore
     }
   }, [viewMode]);
+
+  React.useEffect(() => {
+    if (!filterOpen) return;
+
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (filterMenuRef.current?.contains(target)) return;
+      setFilterOpen(false);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setFilterOpen(false);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [filterOpen]);
 
   const now = React.useMemo(() => new Date(), []);
 
@@ -348,7 +380,54 @@ export function DashboardView({
         </header>
 
         <div className="mt-10 flex items-center justify-between">
-          <nav className="flex items-center gap-8">
+          <div className="relative sm:hidden" ref={filterMenuRef}>
+            <button
+              type="button"
+              className="inline-flex h-6 w-[139px] items-center justify-between"
+              aria-haspopup="menu"
+              aria-expanded={filterOpen}
+              onClick={() => setFilterOpen((v) => !v)}
+            >
+              <span className="text-[12px] leading-6 tracking-[1px] uppercase">
+                <span className="text-[#A9AEB4]">SHOW:</span>{' '}
+                <span className="text-[#323C46]">{FILTER_LABELS[filterMode]}</span>
+              </span>
+              <Image
+                src="/eventio/dashboard/icons/icon-arrow.svg"
+                alt=""
+                width={10}
+                height={5}
+                aria-hidden="true"
+              />
+            </button>
+
+            {filterOpen ? (
+              <div
+                role="menu"
+                className="absolute left-0 top-full z-50 mt-2 w-[162px] rounded-[14px] bg-white py-1 shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
+              >
+                {(['all', 'future', 'past'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    role="menuitem"
+                    className={cn(
+                      'block w-full px-4 py-3 text-left text-[12px] leading-6 tracking-[1px] uppercase hover:bg-surfaceAlt',
+                      mode === filterMode ? 'text-[#323C46]' : 'text-[#A9AEB4]'
+                    )}
+                    onClick={() => {
+                      setFilterMode(mode);
+                      setFilterOpen(false);
+                    }}
+                  >
+                    {FILTER_LABELS[mode]}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <nav className="hidden items-center gap-8 sm:flex">
             <button
               type="button"
               onClick={() => setFilterMode('all')}
