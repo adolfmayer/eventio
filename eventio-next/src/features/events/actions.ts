@@ -94,3 +94,109 @@ export async function leaveEventAction(formData: FormData) {
   redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
 }
 
+export async function updateEventAction(formData: FormData) {
+  const eventId = getString(formData, "eventId");
+  if (!eventId) redirect("/dashboard");
+
+  const parsed = createEventSchema.safeParse({
+    title: getString(formData, "title"),
+    date: getString(formData, "date"),
+    time: getString(formData, "time"),
+    location: getString(formData, "location") || undefined,
+    description: getString(formData, "description") || undefined,
+    capacity: getString(formData, "capacity") || undefined,
+  });
+
+  if (!parsed.success) {
+    const message = parsed.error.issues.map((i) => i.message).join("\n");
+    redirect(
+      `/dashboard-detail-edit?id=${encodeURIComponent(eventId)}&error=${encodeURIComponent(message)}`,
+    );
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) {
+    redirect(`/login?redirectTo=${encodeURIComponent(`/dashboard-detail-edit?id=${eventId}`)}`);
+  }
+
+  const { data: ownerEvent, error: ownerError } = await supabase
+    .from("events")
+    .select("owner_id")
+    .eq("id", eventId)
+    .single();
+
+  if (ownerError || !ownerEvent) {
+    redirect(`/dashboard?error=${encodeURIComponent(ownerError?.message ?? "Event not found")}`);
+  }
+
+  if (ownerEvent.owner_id !== auth.user.id) {
+    redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+  }
+
+  const startsAtIso = new Date(`${parsed.data.date}T${parsed.data.time}:00`).toISOString();
+
+  const { error } = await supabase
+    .from("events")
+    .update({
+      title: parsed.data.title,
+      description: parsed.data.description ?? null,
+      location: parsed.data.location ?? null,
+      starts_at: startsAtIso,
+      capacity: parsed.data.capacity,
+    })
+    .eq("id", eventId);
+
+  if (error) {
+    redirect(
+      `/dashboard-detail-edit?id=${encodeURIComponent(eventId)}&error=${encodeURIComponent(error.message)}`,
+    );
+  }
+
+  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+}
+
+export async function deleteEventAction(formData: FormData) {
+  const eventId = getString(formData, "eventId");
+  if (!eventId) redirect("/dashboard");
+
+  const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) {
+    redirect(`/login?redirectTo=${encodeURIComponent(`/dashboard-detail-edit?id=${eventId}`)}`);
+  }
+
+  const { data: ownerEvent, error: ownerError } = await supabase
+    .from("events")
+    .select("owner_id")
+    .eq("id", eventId)
+    .single();
+
+  if (ownerError || !ownerEvent) {
+    redirect(`/dashboard?error=${encodeURIComponent(ownerError?.message ?? "Event not found")}`);
+  }
+
+  if (ownerEvent.owner_id !== auth.user.id) {
+    redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+  }
+
+  const { error: attendeesDeleteError } = await supabase
+    .from("event_attendees")
+    .delete()
+    .eq("event_id", eventId);
+  if (attendeesDeleteError) {
+    redirect(
+      `/dashboard-detail-edit?id=${encodeURIComponent(eventId)}&error=${encodeURIComponent(attendeesDeleteError.message)}`,
+    );
+  }
+
+  const { error: eventDeleteError } = await supabase.from("events").delete().eq("id", eventId);
+  if (eventDeleteError) {
+    redirect(
+      `/dashboard-detail-edit?id=${encodeURIComponent(eventId)}&error=${encodeURIComponent(eventDeleteError.message)}`,
+    );
+  }
+
+  redirect("/dashboard");
+}
+
