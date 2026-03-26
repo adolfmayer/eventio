@@ -1,44 +1,74 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type SignupFormState = {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  repeatPassword: string;
   isSubmitting: boolean;
   error: string | null;
-  success: string | null;
 };
 
 export function SignupForm() {
   const router = useRouter();
 
   const [state, setState] = React.useState<SignupFormState>({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    repeatPassword: "",
     isSubmitting: false,
     error: null,
-    success: null,
   });
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setState((s) => ({ ...s, isSubmitting: true, error: null, success: null }));
+    const firstName = state.firstName.trim();
+    const lastName = state.lastName.trim();
+
+    if (!firstName || !lastName) {
+      setState((s) => ({
+        ...s,
+        error: "First name and last name are required.",
+      }));
+      return;
+    }
+    if (state.password.length < 6) {
+      setState((s) => ({
+        ...s,
+        error: "Password must be at least 6 characters.",
+      }));
+      return;
+    }
+    if (state.password !== state.repeatPassword) {
+      setState((s) => ({
+        ...s,
+        error: "Passwords do not match.",
+      }));
+      return;
+    }
+
+    setState((s) => ({ ...s, isSubmitting: true, error: null }));
 
     const supabase = createSupabaseBrowserClient();
-    const { data, error } = await supabase.auth.signUp({
+    const fullName = `${firstName} ${lastName}`.trim();
+    const { error } = await supabase.auth.signUp({
       email: state.email,
       password: state.password,
       options: {
         data: {
-          full_name: state.fullName || undefined,
+          first_name: firstName,
+          last_name: lastName,
+          full_name: fullName,
         },
       },
     });
@@ -48,65 +78,105 @@ export function SignupForm() {
       return;
     }
 
-    // Depending on Supabase email confirmation settings:
-    // - user might be logged in immediately, or
-    // - they must confirm via email.
-    setState((s) => ({
-      ...s,
-      isSubmitting: false,
-      success: "Account created. If required, check your email to confirm.",
-    }));
-
-    // If email confirmation is enabled, `data.session` will often be null.
-    // In that case, redirecting to protected routes just bounces back to /login.
-    router.replace(data.session ? "/dashboard" : "/login");
+    router.replace("/login");
     router.refresh();
   }
 
   return (
-    <form className="mt-6 space-y-4" onSubmit={onSubmit}>
-      <label className="block text-sm font-medium text-text">
-        Full Name
-        <Input
-          className="mt-1"
-          value={state.fullName}
-          onChange={(e) => setState((s) => ({ ...s, fullName: e.target.value }))}
-          placeholder="Ada Lovelace"
-          autoComplete="name"
+    <form className="mt-[48px] w-full lg:mt-[64px]" onSubmit={onSubmit}>
+      <label className="block">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          First name
+        </span>
+        <input
+          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          type="text"
+          value={state.firstName}
+          onChange={(e) =>
+            setState((s) => ({ ...s, firstName: e.target.value }))
+          }
+          autoComplete="given-name"
+          required
         />
       </label>
-      <label className="block text-sm font-medium text-text">
-        Email
-        <Input
-          className="mt-1"
+
+      <label className="mt-10 block lg:mt-8">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          Last name
+        </span>
+        <input
+          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          type="text"
+          value={state.lastName}
+          onChange={(e) => setState((s) => ({ ...s, lastName: e.target.value }))}
+          autoComplete="family-name"
+          required
+        />
+      </label>
+
+      <label className="mt-10 block lg:mt-8">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          Email
+        </span>
+        <input
+          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
           type="email"
           value={state.email}
           onChange={(e) => setState((s) => ({ ...s, email: e.target.value }))}
-          placeholder="ada@example.com"
           autoComplete="email"
           required
         />
       </label>
-      <label className="block text-sm font-medium text-text">
-        Password
-        <Input
-          className="mt-1"
+
+      <label className="mt-10 block lg:mt-8">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          Password
+        </span>
+        <input
+          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
           type="password"
           value={state.password}
           onChange={(e) => setState((s) => ({ ...s, password: e.target.value }))}
-          placeholder="********"
+          autoComplete="new-password"
+          minLength={6}
+          required
+        />
+      </label>
+
+      <label className="mt-10 block lg:mt-8">
+        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+          Repeat password
+        </span>
+        <input
+          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          type="password"
+          value={state.repeatPassword}
+          onChange={(e) =>
+            setState((s) => ({ ...s, repeatPassword: e.target.value }))
+          }
           autoComplete="new-password"
           required
         />
       </label>
 
-      {state.error ? (
-        <p className="text-sm text-dangerStrong">{state.error}</p>
-      ) : null}
-      {state.success ? <p className="text-sm text-muted">{state.success}</p> : null}
+      <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3] lg:hidden">
+        Already have an account?
+        <Link
+          href="/login"
+          className="ml-1 font-semibold tracking-[1px] text-text hover:underline"
+        >
+          SIGN IN
+        </Link>
+      </p>
 
-      <Button className="w-full" size="lg" type="submit" disabled={state.isSubmitting}>
-        {state.isSubmitting ? "Creating..." : "Create Account"}
+      {state.error ? <p className="mt-2 text-[14px] leading-6 text-danger">{state.error}</p> : null}
+
+      <Button
+        className="mt-[64px] h-[57px] w-full rounded-[4px] text-[16px] font-normal uppercase tracking-[1px] hover:bg-brandStrong lg:mt-16"
+        type="submit"
+        disabled={state.isSubmitting}
+      >
+        {state.isSubmitting ? "Loading..." : "Sign up"}
       </Button>
     </form>
   );
