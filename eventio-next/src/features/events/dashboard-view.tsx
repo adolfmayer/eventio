@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Image from "next/image";
-import Link from "next/link";
+import * as React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { SignOutButton } from "@/features/auth/sign-out-button";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/cn";
-import { joinEventAction, leaveEventAction } from "@/features/events/actions";
+import { SignOutButton } from '@/features/auth/sign-out-button';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/cn';
+import { joinEventAction, leaveEventAction } from '@/features/events/actions';
 
-type ViewMode = "grid" | "list";
-type FilterMode = "all" | "future" | "past";
+type ViewMode = 'grid' | 'list';
+type FilterMode = 'all' | 'future' | 'past';
 
 type DashboardUser = {
   id: string;
@@ -35,20 +35,78 @@ export type DashboardViewProps = {
   errorMessage: string | null;
 };
 
+function GridIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 0H24V24H0V0Z"
+        stroke="black"
+        strokeOpacity="0.01"
+        strokeWidth="0"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 11H9V5H4V11ZM4 18H9V12H4V18ZM10 18H15V12H10V18ZM16 18H21V12H16V18ZM10 11H15V5H10V11ZM16 5V11H21V5H16Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function ListIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0 0H24V24H0V0Z"
+        stroke="black"
+        strokeOpacity="0.01"
+        strokeWidth="0"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 18H21V12H4V18ZM4 5V11H21V5H4Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 function formatCardDate(startsAtIso: string) {
   const d = new Date(startsAtIso);
   return d.toLocaleString(undefined, {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   });
 }
 
 function getInitials(nameOrEmail: string | null) {
-  const base = (nameOrEmail ?? "").trim();
-  if (!base) return "U";
+  const base = (nameOrEmail ?? '').trim();
+  if (!base) return 'U';
   const parts = base.split(/\s+/).filter(Boolean);
   if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
   return base.slice(0, 2).toUpperCase();
@@ -66,15 +124,15 @@ function SmallActionButton({
   kind,
   children,
 }: {
-  kind: "join" | "leave" | "edit";
+  kind: 'join' | 'leave' | 'edit';
   children: React.ReactNode;
 }) {
   const base =
-    "h-8 w-[100px] rounded-[4px] text-[14px] leading-[14px] uppercase tracking-[1px] font-normal";
+    'h-8 w-[100px] rounded-[4px] text-[14px] leading-[14px] uppercase tracking-[1px] font-normal';
   const byKind: Record<typeof kind, string> = {
-    join: "bg-brand text-white hover:bg-brandStrong",
-    leave: "bg-danger text-white hover:bg-dangerStrong",
-    edit: "bg-[#D9DCE1] text-[#A9AEB4] hover:bg-[#C4C9D1]",
+    join: 'bg-brand text-white hover:bg-brandStrong',
+    leave: 'bg-danger text-white hover:bg-dangerStrong',
+    edit: 'bg-[#D9DCE1] text-[#A9AEB4] hover:bg-[#C4C9D1]',
   };
 
   return (
@@ -95,16 +153,24 @@ function EventCard({
 }) {
   const attendeeCount = event.event_attendees.length;
   const isOwner = event.owner_id === currentUserId;
-  const isAttendee = event.event_attendees.some((a) => a.user_id === currentUserId);
+  const isAttendee = event.event_attendees.some(
+    (a) => a.user_id === currentUserId
+  );
 
-  const action: "edit" | "leave" | "join" = isOwner ? "edit" : isAttendee ? "leave" : "join";
+  const action: 'edit' | 'leave' | 'join' = isOwner
+    ? 'edit'
+    : isAttendee
+      ? 'leave'
+      : 'join';
 
-  const description = event.description ?? "";
+  const description = event.description ?? '';
   const dateText = formatCardDate(event.starts_at);
   const capacityText =
-    event.capacity == null ? `${attendeeCount} attending` : `${attendeeCount} of ${event.capacity}`;
+    event.capacity == null
+      ? `${attendeeCount} attending`
+      : `${attendeeCount} of ${event.capacity}`;
 
-  if (viewMode === "list") {
+  if (viewMode === 'list') {
     return (
       <div className="relative w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
         <div className="flex items-center gap-4 px-8 py-3">
@@ -125,17 +191,21 @@ function EventCard({
           </p>
 
           <div className="ml-auto flex items-center gap-3">
-            {action === "edit" ? (
-              <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
+            {action === 'edit' ? (
+              <Link
+                href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
+              >
                 <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
                   Edit
                 </Button>
               </Link>
             ) : (
-              <form action={action === "leave" ? leaveEventAction : joinEventAction}>
+              <form
+                action={action === 'leave' ? leaveEventAction : joinEventAction}
+              >
                 <input type="hidden" name="eventId" value={event.id} />
                 <SmallActionButton kind={action}>
-                  {action === "leave" ? "Leave" : "Join"}
+                  {action === 'leave' ? 'Leave' : 'Join'}
                 </SmallActionButton>
               </form>
             )}
@@ -176,17 +246,21 @@ function EventCard({
             </p>
           </div>
 
-          {action === "edit" ? (
-            <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
+          {action === 'edit' ? (
+            <Link
+              href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
+            >
               <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
                 Edit
               </Button>
             </Link>
           ) : (
-            <form action={action === "leave" ? leaveEventAction : joinEventAction}>
+            <form
+              action={action === 'leave' ? leaveEventAction : joinEventAction}
+            >
               <input type="hidden" name="eventId" value={event.id} />
               <SmallActionButton kind={action}>
-                {action === "leave" ? "Leave" : "Join"}
+                {action === 'leave' ? 'Leave' : 'Join'}
               </SmallActionButton>
             </form>
           )}
@@ -196,15 +270,19 @@ function EventCard({
   );
 }
 
-export function DashboardView({ currentUser, events, errorMessage }: DashboardViewProps) {
-  const [viewMode, setViewMode] = React.useState<ViewMode>("grid");
-  const [filterMode, setFilterMode] = React.useState<FilterMode>("all");
+export function DashboardView({
+  currentUser,
+  events,
+  errorMessage,
+}: DashboardViewProps) {
+  const [viewMode, setViewMode] = React.useState<ViewMode>('grid');
+  const [filterMode, setFilterMode] = React.useState<FilterMode>('all');
   const [profileOpen, setProfileOpen] = React.useState(false);
 
   React.useEffect(() => {
     try {
-      const raw = window.localStorage.getItem("eventio.dashboard.viewMode");
-      if (raw === "grid" || raw === "list") setViewMode(raw);
+      const raw = window.localStorage.getItem('eventio.dashboard.viewMode');
+      if (raw === 'grid' || raw === 'list') setViewMode(raw);
     } catch {
       // ignore
     }
@@ -212,7 +290,7 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
 
   React.useEffect(() => {
     try {
-      window.localStorage.setItem("eventio.dashboard.viewMode", viewMode);
+      window.localStorage.setItem('eventio.dashboard.viewMode', viewMode);
     } catch {
       // ignore
     }
@@ -221,10 +299,10 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
   const now = React.useMemo(() => new Date(), []);
 
   const visibleEvents = React.useMemo(() => {
-    if (filterMode === "future") {
+    if (filterMode === 'future') {
       return events.filter((e) => isFuture(e.starts_at, now));
     }
-    if (filterMode === "past") {
+    if (filterMode === 'past') {
       return events.filter((e) => isPast(e.starts_at, now));
     }
     return events;
@@ -255,7 +333,7 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
                 {initials}
               </div>
               <span className="hidden text-[14px] font-medium leading-6 text-[#949EA8] sm:inline">
-                {currentUser.fullName ?? "—"}
+                {currentUser.fullName ?? '—'}
               </span>
               <Image
                 src="/eventio/dashboard/icons/icon-chevron-down.svg"
@@ -297,30 +375,30 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
           <nav className="flex items-center gap-8">
             <button
               type="button"
-              onClick={() => setFilterMode("all")}
+              onClick={() => setFilterMode('all')}
               className={cn(
-                "text-[12px] leading-6 tracking-[1px] uppercase",
-                filterMode === "all" ? "text-text" : "text-[#A9AEB4]",
+                'text-[12px] leading-6 tracking-[1px] uppercase',
+                filterMode === 'all' ? 'text-text' : 'text-[#A9AEB4]'
               )}
             >
               ALL EVENTS
             </button>
             <button
               type="button"
-              onClick={() => setFilterMode("future")}
+              onClick={() => setFilterMode('future')}
               className={cn(
-                "text-[12px] leading-6 tracking-[1px] uppercase",
-                filterMode === "future" ? "text-text" : "text-[#A9AEB4]",
+                'text-[12px] leading-6 tracking-[1px] uppercase',
+                filterMode === 'future' ? 'text-text' : 'text-[#A9AEB4]'
               )}
             >
               FUTURE EVENTS
             </button>
             <button
               type="button"
-              onClick={() => setFilterMode("past")}
+              onClick={() => setFilterMode('past')}
               className={cn(
-                "text-[12px] leading-6 tracking-[1px] uppercase",
-                filterMode === "past" ? "text-text" : "text-[#A9AEB4]",
+                'text-[12px] leading-6 tracking-[1px] uppercase',
+                filterMode === 'past' ? 'text-text' : 'text-[#A9AEB4]'
               )}
             >
               PAST EVENTS
@@ -330,32 +408,26 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setViewMode("grid")}
+              onClick={() => setViewMode('grid')}
               className="inline-flex h-6 w-6 items-center justify-center"
               aria-label="Grid view"
             >
-              <Image
-                src="/eventio/dashboard/icons/icon-grid.svg"
-                alt=""
-                width={24}
-                height={24}
-                aria-hidden="true"
-                className={cn(viewMode === "grid" ? "" : "opacity-40")}
+              <GridIcon
+                className={cn(
+                  viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                )}
               />
             </button>
             <button
               type="button"
-              onClick={() => setViewMode("list")}
+              onClick={() => setViewMode('list')}
               className="inline-flex h-6 w-6 items-center justify-center"
               aria-label="List view"
             >
-              <Image
-                src="/eventio/dashboard/icons/icon-list.svg"
-                alt=""
-                width={24}
-                height={24}
-                aria-hidden="true"
-                className={cn(viewMode === "list" ? "" : "opacity-40")}
+              <ListIcon
+                className={cn(
+                  viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                )}
               />
             </button>
           </div>
@@ -368,7 +440,7 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
             </div>
           ) : null}
 
-          {viewMode === "grid" ? (
+          {viewMode === 'grid' ? (
             <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-[repeat(3,390px)] lg:gap-x-[15px] lg:gap-y-4">
               {visibleEvents.map((event) => (
                 <EventCard
@@ -410,4 +482,3 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
     </main>
   );
 }
-
