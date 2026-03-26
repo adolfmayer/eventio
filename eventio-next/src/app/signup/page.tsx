@@ -77,8 +77,8 @@ export default async function SignUpPage() {
             </p>
           </div>
 
-          <div className="mx-auto grid min-h-screen w-full max-w-[320px] place-items-center lg:max-w-[480px]">
-            <div className="w-full">
+          <div className="mx-auto w-full max-w-[320px] pt-[114px] pb-16 lg:grid lg:min-h-screen lg:max-w-[480px] lg:place-items-center lg:py-0">
+            <div className="w-full lg:py-0">
               <div className="text-center lg:text-left">
                 <h1 className="text-[22px] font-normal leading-[48px] text-text lg:text-[28px]">
                   Get started absolutely free.
