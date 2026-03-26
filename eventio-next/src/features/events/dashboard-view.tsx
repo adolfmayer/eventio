@@ -194,6 +194,11 @@ function EventCard({
   if (viewMode === 'list') {
     return (
       <div className="relative w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+        <Link
+          href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
+          className="absolute inset-0 z-0"
+          aria-label={`Open ${event.title}`}
+        />
         <div className="flex items-center gap-4 px-8 py-3">
           <p className="w-[220px] truncate text-[18px] leading-[48px] text-text">
             {event.title}
@@ -211,7 +216,7 @@ function EventCard({
             {capacityText}
           </p>
 
-          <div className="ml-auto flex items-center gap-3">
+          <div className="relative z-10 ml-auto flex items-center gap-3">
             {action === 'edit' ? (
               <Link
                 href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
@@ -239,6 +244,11 @@ function EventCard({
   // grid
   return (
     <div className="relative h-[296px] w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
+      <Link
+        href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
+        className="absolute inset-0 z-0"
+        aria-label={`Open ${event.title}`}
+      />
       <div className="flex h-full flex-col p-8">
         <p className="text-[14px] font-normal leading-6 text-[#CACDD0]">
           {dateText}
@@ -253,7 +263,7 @@ function EventCard({
           {description}
         </p>
 
-        <div className="mt-auto flex items-center justify-between pt-8">
+        <div className="relative z-10 mt-auto flex items-center justify-between pt-8">
           <div className="flex items-center gap-1.5">
             <Image
               src="/eventio/dashboard/icons/icon-user.svg"

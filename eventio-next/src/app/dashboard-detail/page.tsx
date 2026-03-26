@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { DashboardProfileMenu } from "@/components/shared/dashboard-profile-menu";
 import { joinEventAction, leaveEventAction } from "@/features/events/actions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -34,7 +35,7 @@ export default async function DashboardDetailPage({
     redirect(`/dashboard-detail?id=${encodeURIComponent(first.id)}`);
   }
 
-  const [{ data: event, error: eventError }, { count: attendeesCount }, { data: attendeeRow }] =
+  const [{ data: event, error: eventError }, { data: attendees, count: attendeesCount }] =
     await Promise.all([
       supabase
         .from("events")
@@ -43,123 +44,188 @@ export default async function DashboardDetailPage({
         .single(),
       supabase
         .from("event_attendees")
-        .select("*", { count: "exact", head: true })
+        .select("user_id", { count: "exact" })
         .eq("event_id", eventId),
-      supabase
-        .from("event_attendees")
-        .select("event_id")
-        .eq("event_id", eventId)
-        .eq("user_id", auth.user.id)
-        .maybeSingle(),
     ]);
 
   if (eventError || !event) {
     redirect(`/dashboard?error=${encodeURIComponent(eventError?.message ?? "Event not found")}`);
   }
 
+  const attendeeUserIds = (attendees ?? []).map((a) => a.user_id);
   const isOwner = event.owner_id === auth.user.id;
-  const isJoined = Boolean(attendeeRow);
+  const isJoined = attendeeUserIds.includes(auth.user.id);
+
+  const [{ data: ownerProfile }, { data: attendeeProfiles }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", event.owner_id)
+      .maybeSingle(),
+    attendeeUserIds.length
+      ? supabase.from("profiles").select("id,display_name").in("id", attendeeUserIds)
+      : Promise.resolve({ data: [] as Array<{ id: string; display_name: string }> }),
+  ]);
+
+  const attendeeNameById = new Map(
+    (attendeeProfiles ?? []).map((p) => [p.id, p.display_name]),
+  );
+  const attendeePills = attendeeUserIds.map((id) => ({
+    id,
+    isCurrentUser: id === auth.user.id,
+    label: id === auth.user.id ? "You" : attendeeNameById.get(id) ?? "Attendee",
+  }));
+
+  const authorName =
+    ownerProfile?.display_name ??
+    (auth.user.user_metadata?.full_name as string | undefined) ??
+    "Event author";
+  const capacityText =
+    event.capacity == null
+      ? `${attendeesCount ?? 0} attending`
+      : `${attendeesCount ?? 0} of ${event.capacity}`;
+  const detailId = event.id.slice(0, 6).toUpperCase();
 
   return (
-    <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
-      <div className="mx-auto w-full max-w-6xl">
-        <div className="mb-4 inline-flex rounded-control border border-stroke bg-surface p-1 text-xs font-semibold sm:text-sm">
-          <span className="rounded-control bg-brand px-3 py-2 text-white">
-            03-1-1-Detail
-          </span>
-          <Link
-            href="/dashboard-detail-joined"
-            className="rounded-control px-3 py-2 text-muted hover:bg-surfaceAlt"
-          >
-            03-1-2-Detail-Joined
-          </Link>
-          <Link
-            href="/dashboard-detail-edit"
-            className="rounded-control px-3 py-2 text-muted hover:bg-surfaceAlt"
-          >
-            03-1-3-Detail-Edit
-          </Link>
-        </div>
-      </div>
-
-      <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[2fr_1fr]">
-        <Card className="p-5 sm:p-7">
-          <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-text">
-            Event detail
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text sm:text-3xl">
-            {event.title}
-          </h1>
-          <p className="mt-3 text-sm text-muted sm:text-base">
-            {event.description ?? "—"}
-          </p>
-          {params.error ? (
-            <p className="mt-4 text-sm text-dangerStrong">{params.error}</p>
-          ) : null}
-          <div className="mt-6 flex flex-wrap gap-2">
-            {isJoined ? (
-              <form action={leaveEventAction}>
-                <input type="hidden" name="eventId" value={event.id} />
-                <Button size="sm" variant="secondary" type="submit">
-                  Leave Event
-                </Button>
-              </form>
-            ) : (
-              <form action={joinEventAction}>
-                <input type="hidden" name="eventId" value={event.id} />
-                <Button size="sm" type="submit">
-                  Join Event
-                </Button>
-              </form>
-            )}
-
-            {isOwner ? (
-              <Link
-                href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
-                className="inline-flex h-9 items-center justify-center rounded-control border border-stroke bg-surface px-3 text-sm font-semibold text-text shadow-sm hover:bg-surfaceAlt"
-              >
-                Edit Event
-              </Link>
-            ) : null}
+    <main className="min-h-screen bg-[#F9F9FB]">
+      <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
+        <div className="mx-auto w-full xl:max-w-[1200px]">
+          <header className="relative flex items-center justify-between pt-2">
+            <Link href="/dashboard" aria-label="Eventio">
+              <span className="text-[28px] font-semibold text-text">E.</span>
+            </Link>
 
             <Link
               href="/dashboard"
-              className="inline-flex h-9 items-center justify-center rounded-control border border-stroke bg-surface px-3 text-sm font-semibold text-text shadow-sm hover:bg-surfaceAlt"
+              className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 text-[16px] leading-[48px] text-text md:inline-flex"
             >
-              Back to Dashboard
+              <Image
+                src="/eventio/dashboard/icons/icon-back.svg"
+                alt=""
+                width={24}
+                height={24}
+                aria-hidden="true"
+              />
+              Back to events
             </Link>
-          </div>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-card border border-stroke bg-surfaceAlt p-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-muted">
-                Agenda
-              </p>
-              <p className="mt-2 text-sm text-text">
-                Keynotes, case studies, networking dinner.
-              </p>
-            </div>
-            <div className="rounded-card border border-stroke bg-surfaceAlt p-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-muted">
-                Capacity
-              </p>
-              <p className="mt-2 text-sm text-text">
-                {attendeesCount ?? 0}
-                {event.capacity ? ` / ${event.capacity}` : ""} spots reserved.
-              </p>
-            </div>
-          </div>
-        </Card>
 
-        <Card className="p-5">
-          <h2 className="text-lg font-semibold text-text">Event facts</h2>
-          <ul className="mt-3 space-y-2 text-sm text-muted">
-            <li>Date: {new Date(event.starts_at).toLocaleDateString()}</li>
-            <li>Time: {new Date(event.starts_at).toLocaleTimeString()}</li>
-            <li>Location: {event.location ?? "—"}</li>
-            <li>Attendees: {attendeesCount ?? 0}</li>
-          </ul>
-        </Card>
+            <DashboardProfileMenu
+              fullName={
+                (auth.user.user_metadata?.full_name as string | undefined) ?? null
+              }
+              email={auth.user.email ?? null}
+            />
+          </header>
+
+          <p className="mt-10 text-[12px] uppercase tracking-[1px] text-[#A9AEB4]">
+            DETAIL EVENT: #{detailId}
+          </p>
+
+          <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
+            <article className="h-[296px] rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+              <div className="flex h-full flex-col p-6 lg:p-8">
+                <p className="text-[14px] leading-6 text-[#CACDD0]">
+                  {new Date(event.starts_at).toLocaleString()}
+                </p>
+                <h1 className="mt-2 text-[22px] leading-[48px] text-text lg:text-[45px] lg:leading-[48px]">
+                  {event.title}
+                </h1>
+                <p className="-mt-2 text-[14px] leading-6 text-[#7D7878]">{authorName}</p>
+                <p className="mt-6 line-clamp-2 text-[16px] leading-6 text-[#949EA8]">
+                  {event.description ?? "—"}
+                </p>
+                {params.error ? (
+                  <p className="mt-2 text-[14px] leading-6 text-danger">{params.error}</p>
+                ) : null}
+
+                <div className="mt-auto flex items-center justify-between pt-8">
+                  <div className="flex items-center gap-1.5">
+                    <Image
+                      src="/eventio/dashboard/icons/icon-user.svg"
+                      alt=""
+                      width={24}
+                      height={24}
+                      aria-hidden="true"
+                    />
+                    <p className="text-[14px] leading-6 text-[#949EA8]">{capacityText}</p>
+                  </div>
+
+                  {isOwner ? (
+                    <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
+                      <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+                        Edit
+                      </Button>
+                    </Link>
+                  ) : isJoined ? (
+                    <form action={leaveEventAction}>
+                      <input type="hidden" name="eventId" value={event.id} />
+                      <Button className="h-8 w-[100px] rounded-[4px] bg-danger text-[14px] leading-4 font-normal uppercase tracking-[1px] text-white hover:bg-dangerStrong">
+                        Leave
+                      </Button>
+                    </form>
+                  ) : (
+                    <form action={joinEventAction}>
+                      <input type="hidden" name="eventId" value={event.id} />
+                      <Button className="h-8 w-[100px] rounded-[4px] bg-brand text-[14px] leading-4 font-normal uppercase tracking-[1px] text-white hover:bg-brandStrong">
+                        Join
+                      </Button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </article>
+
+            <aside className="h-[216px] rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px]">
+              <div className="p-6 lg:p-8">
+                <h2 className="text-[22px] leading-8 text-text">Attendees</h2>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {attendeePills.length ? (
+                    attendeePills.map((attendee) => (
+                      <span
+                        key={attendee.id}
+                        className={
+                          attendee.isCurrentUser
+                            ? "rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]"
+                            : "rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]"
+                        }
+                      >
+                        {attendee.label}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]">
+                      No attendees yet
+                    </span>
+                  )}
+                </div>
+              </div>
+            </aside>
+          </section>
+        </div>
       </div>
+
+      <Link
+        href="/create-new"
+        className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-[#565D5A]"
+        aria-label="Create new event"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          className="text-white"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z"
+            fill="currentColor"
+          />
+        </svg>
+      </Link>
     </main>
   );
 }
