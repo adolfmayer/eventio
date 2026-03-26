@@ -2,6 +2,16 @@ import { ProfileView } from "@/features/profile/profile-view";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
+type ProfileEventRow = {
+  id: string;
+  title: string;
+  description: string | null;
+  owner_id: string;
+  capacity: number | null;
+  starts_at: string;
+  event_attendees: Array<{ user_id: string }>;
+};
+
 export const metadata = {
   title: "My Profile",
 };
@@ -33,19 +43,11 @@ export default async function ProfilePage() {
         .from("events")
         .select("id,title,description,owner_id,capacity,starts_at,event_attendees(user_id)")
         .in("id", joinedEventIds)
-    : { data: [] as Array<{
-        id: string;
-        title: string;
-        description: string | null;
-        owner_id: string;
-        capacity: number | null;
-        starts_at: string;
-        event_attendees: Array<{ user_id: string }>;
-      }> };
+    : { data: [] as ProfileEventRow[] };
 
-  const mergedById = new Map<string, (typeof createdEvents extends Array<infer T> ? T : never)>();
-  for (const event of createdEvents ?? []) mergedById.set(event.id, event);
-  for (const event of joinedEvents ?? []) mergedById.set(event.id, event);
+  const mergedById = new Map<string, ProfileEventRow>();
+  for (const event of (createdEvents ?? []) as ProfileEventRow[]) mergedById.set(event.id, event);
+  for (const event of (joinedEvents ?? []) as ProfileEventRow[]) mergedById.set(event.id, event);
   const mergedEvents = Array.from(mergedById.values()).sort(
     (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
   );
