@@ -1,12 +1,12 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { createEventAction } from "@/features/events/actions";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+import { CreateEventForm } from '@/features/events/create-event-form';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: "Create New",
+  title: 'Create New',
 };
 
 export default async function CreateNewPage({
@@ -16,20 +16,22 @@ export default async function CreateNewPage({
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) redirect("/login?redirectTo=/create-new");
+  if (!auth.user) redirect('/login?redirectTo=/create-new');
 
   const params = (await searchParams) ?? {};
   const closeHref =
-    typeof params.from === "string" && params.from.startsWith("/")
+    typeof params.from === 'string' && params.from.startsWith('/')
       ? params.from
-      : "/dashboard";
+      : '/dashboard';
 
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-8 pt-7">
         <header className="flex items-center justify-between">
           <Link href="/dashboard" aria-label="Eventio">
-            <span className="text-[22px] font-semibold text-text sm:text-[28px]">E.</span>
+            <span className="text-[22px] font-semibold text-text sm:text-[28px]">
+              E.
+            </span>
           </Link>
           <Link
             href={closeHref}
@@ -54,90 +56,9 @@ export default async function CreateNewPage({
             Enter details below.
           </p>
 
-          {params.error ? (
-            <p className="mt-4 whitespace-pre-line text-[14px] leading-6 text-dangerStrong">
-              {params.error}
-            </p>
-          ) : null}
-
-          <form action={createEventAction} className="mt-6">
-            <label className="block">
-              <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Title</span>
-              <input
-                name="title"
-                type="text"
-                className="mt-1 block h-8 w-full border-b border-[#DAE1E7] bg-transparent text-[16px] leading-6 text-[#323C46] outline-none"
-                required
-                maxLength={120}
-              />
-            </label>
-
-            <label className="mt-6 block">
-              <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">
-                Description
-              </span>
-              <input
-                name="description"
-                type="text"
-                className="mt-1 block h-8 w-full border-b border-[#DAE1E7] bg-transparent text-[16px] leading-6 text-[#323C46] outline-none"
-                maxLength={2000}
-              />
-            </label>
-
-            <label className="mt-6 block">
-              <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Date</span>
-              <input
-                name="date"
-                type="date"
-                className="mt-1 block h-8 w-full border-b border-[#DAE1E7] bg-transparent text-[16px] leading-6 text-[#323C46] outline-none"
-                required
-              />
-            </label>
-
-            <label className="mt-6 block">
-              <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Time</span>
-              <input
-                name="time"
-                type="time"
-                className="mt-1 block h-8 w-full border-b border-[#DAE1E7] bg-transparent text-[16px] leading-6 text-[#323C46] outline-none"
-                required
-              />
-            </label>
-
-            <label className="mt-6 block">
-              <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">
-                Location
-              </span>
-              <input
-                name="location"
-                type="text"
-                className="mt-1 block h-8 w-full border-b border-[#DAE1E7] bg-transparent text-[16px] leading-6 text-[#323C46] outline-none"
-                maxLength={120}
-              />
-            </label>
-
-            <label className="mt-6 block">
-              <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">
-                Capacity
-              </span>
-              <input
-                name="capacity"
-                type="number"
-                min={1}
-                className="mt-1 block h-8 w-full border-b border-[#DAE1E7] bg-transparent text-[16px] leading-6 text-[#323C46] outline-none"
-              />
-            </label>
-
-            <button
-              type="submit"
-              className="mx-auto mt-8 block h-[57px] w-[240px] rounded-[4px] bg-[#22D486] text-[16px] leading-8 tracking-[1px] text-white uppercase hover:bg-[#1DBB76]"
-            >
-              CREATE NEW EVENT
-            </button>
-          </form>
+          <CreateEventForm from={closeHref} serverError={params.error} />
         </section>
       </div>
     </main>
   );
 }
-

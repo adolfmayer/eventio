@@ -12,6 +12,8 @@ function getString(formData: FormData, key: string) {
 }
 
 export async function createEventAction(formData: FormData) {
+  const from = getString(formData, "from");
+  const fromQuery = from.startsWith("/") ? `&from=${encodeURIComponent(from)}` : "";
   const parsed = createEventSchema.safeParse({
     title: getString(formData, "title"),
     date: getString(formData, "date"),
@@ -23,7 +25,7 @@ export async function createEventAction(formData: FormData) {
 
   if (!parsed.success) {
     const message = parsed.error.issues.map((i) => i.message).join("\n");
-    redirect(`/create-new?error=${encodeURIComponent(message)}`);
+    redirect(`/create-new?error=${encodeURIComponent(message)}${fromQuery}`);
   }
 
   const supabase = await createSupabaseServerClient();
@@ -46,7 +48,9 @@ export async function createEventAction(formData: FormData) {
     .single();
 
   if (error || !data) {
-    redirect(`/create-new?error=${encodeURIComponent(error?.message ?? "Failed to create event")}`);
+    redirect(
+      `/create-new?error=${encodeURIComponent(error?.message ?? "Failed to create event")}${fromQuery}`,
+    );
   }
 
   redirect(`/dashboard-detail?id=${encodeURIComponent(data.id)}`);
