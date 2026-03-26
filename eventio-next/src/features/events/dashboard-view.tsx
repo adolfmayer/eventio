@@ -23,6 +23,7 @@ type DashboardEvent = {
   title: string;
   description: string | null;
   owner_id: string;
+  authorName: string;
   capacity: number | null;
   starts_at: string;
   event_attendees: Array<{ user_id: string }>;
@@ -113,9 +114,8 @@ function EventCard({
           <p className="hidden flex-1 truncate text-[16px] leading-6 text-[#949EA8] lg:block">
             {description}
           </p>
-          <p className="hidden w-[140px] text-[14px] leading-6 text-[#7D7878] lg:block">
-            {/* Placeholder for author name, until we join profile data */}
-            —
+          <p className="hidden w-[140px] truncate text-[14px] font-normal leading-6 text-[#7D7878] lg:block">
+            {event.authorName}
           </p>
           <p className="hidden w-[160px] text-[14px] leading-6 text-[#CACDD0] lg:block">
             {dateText}
@@ -147,14 +147,22 @@ function EventCard({
 
   // grid
   return (
-    <div className="relative w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-      <div className="p-8">
-        <p className="text-[14px] leading-6 text-[#CACDD0]">{dateText}</p>
-        <h2 className="mt-2 text-[22px] leading-[48px] text-text">{event.title}</h2>
-        <p className="mt-1 text-[14px] leading-6 text-[#7D7878]">—</p>
-        <p className="mt-6 text-[16px] leading-6 text-[#949EA8]">{description}</p>
+    <div className="relative h-[296px] w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:w-[390px]">
+      <div className="flex h-full flex-col p-8">
+        <p className="text-[14px] font-normal leading-6 text-[#CACDD0]">
+          {dateText}
+        </p>
+        <h2 className="mt-2 text-[22px] font-normal leading-[48px] text-text">
+          {event.title}
+        </h2>
+        <p className="-mt-2 truncate text-[14px] font-normal leading-6 text-[#7D7878]">
+          {event.authorName}
+        </p>
+        <p className="mt-6 line-clamp-2 text-[16px] font-normal leading-6 text-[#949EA8]">
+          {description}
+        </p>
 
-        <div className="mt-12 flex items-center justify-between">
+        <div className="mt-auto flex items-center justify-between pt-8">
           <div className="flex items-center gap-1.5">
             <Image
               src="/eventio/dashboard/icons/icon-user.svg"
@@ -163,12 +171,14 @@ function EventCard({
               height={24}
               aria-hidden="true"
             />
-            <p className="text-[14px] leading-6 text-[#949EA8]">{capacityText}</p>
+            <p className="text-[14px] font-normal leading-6 text-[#949EA8]">
+              {capacityText}
+            </p>
           </div>
 
           {action === "edit" ? (
             <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
-              <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+              <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
                 Edit
               </Button>
             </Link>
@@ -359,7 +369,7 @@ export function DashboardView({ currentUser, events, errorMessage }: DashboardVi
           ) : null}
 
           {viewMode === "grid" ? (
-            <div className="grid gap-8 lg:grid-cols-3">
+            <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-[repeat(3,390px)] lg:gap-x-[15px] lg:gap-y-4">
               {visibleEvents.map((event) => (
                 <EventCard
                   key={event.id}
