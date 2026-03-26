@@ -51,7 +51,7 @@ export function DashboardProfileMenu({ fullName, email }: DashboardProfileMenuPr
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 mt-3 w-[162px] rounded-[14px] bg-white shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
+          className="absolute right-0 z-50 mt-3 w-[162px] rounded-[14px] bg-white shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
         >
           <Link
             href="/profile"
@@ -61,11 +61,11 @@ export function DashboardProfileMenu({ fullName, email }: DashboardProfileMenuPr
           >
             Profile
           </Link>
-          <div className="px-4 pb-3">
+          <div className="pb-3">
             <SignOutButton
               variant="ghost"
               size="sm"
-              className="h-auto w-full justify-start px-0 py-0 text-[14px] font-medium leading-6 text-[#9CA5AF] hover:bg-transparent"
+              className="h-auto w-full justify-start rounded-none px-4 py-3 text-[14px] font-medium leading-6 text-[#9CA5AF] hover:bg-surfaceAlt"
             >
               Log out
             </SignOutButton>
