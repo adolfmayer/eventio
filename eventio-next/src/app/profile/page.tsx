@@ -1,8 +1,6 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ProfileView } from "@/features/profile/profile-view";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { SignOutButton } from "@/features/auth/sign-out-button";
 
 export const metadata = {
   title: "My Profile",
@@ -16,62 +14,62 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
+  const userId = data.user.id;
+  const currentUserFullName =
+    (data.user.user_metadata?.full_name as string | undefined) ?? null;
+  const currentUserEmail = data.user.email ?? null;
+
+  const [{ data: createdEvents }, { data: joinedRows }] = await Promise.all([
+    supabase
+      .from("events")
+      .select("id,title,description,owner_id,capacity,starts_at,event_attendees(user_id)")
+      .eq("owner_id", userId),
+    supabase.from("event_attendees").select("event_id").eq("user_id", userId),
+  ]);
+
+  const joinedEventIds = (joinedRows ?? []).map((row) => row.event_id);
+  const { data: joinedEvents } = joinedEventIds.length
+    ? await supabase
+        .from("events")
+        .select("id,title,description,owner_id,capacity,starts_at,event_attendees(user_id)")
+        .in("id", joinedEventIds)
+    : { data: [] as Array<{
+        id: string;
+        title: string;
+        description: string | null;
+        owner_id: string;
+        capacity: number | null;
+        starts_at: string;
+        event_attendees: Array<{ user_id: string }>;
+      }> };
+
+  const mergedById = new Map<string, (typeof createdEvents extends Array<infer T> ? T : never)>();
+  for (const event of createdEvents ?? []) mergedById.set(event.id, event);
+  for (const event of joinedEvents ?? []) mergedById.set(event.id, event);
+  const mergedEvents = Array.from(mergedById.values()).sort(
+    (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+  );
+
+  const ownerIds = Array.from(new Set(mergedEvents.map((event) => event.owner_id)));
+  const { data: ownerProfiles } = ownerIds.length
+    ? await supabase.from("profiles").select("id,display_name").in("id", ownerIds)
+    : { data: [] as Array<{ id: string; display_name: string }> };
+  const ownerNameById = new Map((ownerProfiles ?? []).map((profile) => [profile.id, profile.display_name]));
+
+  const eventsWithAuthor = mergedEvents.map((event) => ({
+    ...event,
+    authorName: ownerNameById.get(event.owner_id) ?? "Event author",
+  }));
+
   return (
-    <main className="min-h-screen px-4 py-8 sm:px-6">
-      <Card className="mx-auto grid w-full max-w-4xl gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_2fr]">
-        <aside className="rounded-card bg-surfaceAlt p-5">
-          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-brand text-2xl font-semibold text-white">
-            AL
-          </div>
-          <h1 className="mt-4 text-center text-xl font-semibold text-text">
-            Ada Lovelace
-          </h1>
-          <p className="mt-1 text-center text-sm text-muted">
-            Product Engineer
-          </p>
-        </aside>
-        <div>
-          <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-text">
-            04-1-1-My-Profile
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-text">
-            My profile
-          </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-card border border-stroke bg-surface p-4">
-              <p className="text-xs uppercase tracking-[0.15em] text-muted">
-                Joined events
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-text">18</p>
-            </div>
-            <div className="rounded-card border border-stroke bg-surface p-4">
-              <p className="text-xs uppercase tracking-[0.15em] text-muted">
-                Created events
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-text">4</p>
-            </div>
-          </div>
-          <div className="mt-6 rounded-card border border-stroke bg-surface p-4 text-sm text-muted">
-            <p>
-              <span className="font-semibold text-text">Email:</span>{" "}
-              {data.user.email ?? "—"}
-            </p>
-            <p className="mt-2">
-              <span className="font-semibold text-text">User ID:</span>{" "}
-              {data.user.id}
-            </p>
-          </div>
-          <div className="mt-6 flex flex-wrap gap-2">
-            <Button variant="secondary" size="lg">
-              Edit Profile
-            </Button>
-            <SignOutButton variant="danger" size="lg">
-              Sign out
-            </SignOutButton>
-          </div>
-        </div>
-      </Card>
-    </main>
+    <ProfileView
+      currentUser={{
+        id: userId,
+        fullName: currentUserFullName,
+        email: currentUserEmail,
+      }}
+      events={eventsWithAuthor}
+    />
   );
 }
 
