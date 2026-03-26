@@ -97,7 +97,7 @@ export default async function DashboardDetailPage({
 
             <Link
               href="/dashboard"
-              className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 text-[16px] leading-[48px] text-text md:inline-flex"
+              className="absolute left-1/2 inline-flex -translate-x-1/2 items-center gap-2 whitespace-nowrap text-[14px] leading-[48px] text-text md:text-[16px]"
             >
               <Image
                 src="/eventio/dashboard/icons/icon-back.svg"
