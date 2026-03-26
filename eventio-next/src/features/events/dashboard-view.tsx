@@ -335,6 +335,7 @@ export function DashboardView({
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
+        <div className="mx-auto w-full xl:max-w-[1200px]">
         <header className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" aria-label="Eventio">
@@ -485,6 +486,7 @@ export function DashboardView({
             </div>
           )}
         </section>
+        </div>
       </div>
 
       <Link
