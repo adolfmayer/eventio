@@ -20,14 +20,22 @@ export default async function DashboardPage() {
     .select("id,title,description,owner_id,capacity,starts_at,event_attendees(user_id)")
     .order("starts_at", { ascending: true });
 
+  const ownerIds = Array.from(new Set((events ?? []).map((event) => event.owner_id)));
+  const { data: ownerProfiles } = ownerIds.length
+    ? await supabase
+        .from("profiles")
+        .select("id,display_name")
+        .in("id", ownerIds)
+    : { data: [] as Array<{ id: string; display_name: string }> };
+
+  const ownerNameById = new Map(
+    (ownerProfiles ?? []).map((profile) => [profile.id, profile.display_name]),
+  );
+
   const eventsWithAuthor = (events ?? []).map((event) => {
-    const isOwner = event.owner_id === auth.user.id;
     return {
       ...event,
-      authorName: isOwner
-        ? (currentUserFullName ??
-          (currentUserEmail ? currentUserEmail.split("@")[0] : "Event author"))
-        : "Event author",
+      authorName: ownerNameById.get(event.owner_id) ?? "Event author",
     };
   });
 
