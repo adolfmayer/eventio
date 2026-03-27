@@ -123,7 +123,7 @@ export function SignupForm() {
 
     const supabase = createSupabaseBrowserClient();
     const fullName = `${firstName} ${lastName}`.trim();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: state.email,
       password: state.password,
       options: {
@@ -159,7 +159,31 @@ export function SignupForm() {
       setState((s) => ({
         ...s,
         isSubmitting: false,
-        errors: { ...s.errors, form: toUserFacingSignupError(error.message) },
+        errors: {
+          ...s.errors,
+          email: /already|exists|registered/i.test(error.message)
+            ? "This email may already be registered. Try signing in or resetting your password."
+            : s.errors.email,
+          form: /already|exists|registered/i.test(error.message)
+            ? null
+            : toUserFacingSignupError(error.message),
+        },
+      }));
+      return;
+    }
+
+    // Supabase may return a "fake success" for an existing confirmed user
+    // (anti-enumeration). In that case identities can be empty.
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      setState((s) => ({
+        ...s,
+        isSubmitting: false,
+        errors: {
+          ...s.errors,
+          email:
+            "This email may already be registered. Try signing in or resetting your password.",
+          form: null,
+        },
       }));
       return;
     }
@@ -385,9 +409,7 @@ export function SignupForm() {
       </p>
 
       {state.errors.form ? (
-        <p className="mt-2 text-[14px] leading-6 text-danger">
-          {state.errors.form}
-        </p>
+        <p className="mt-2 text-[14px] leading-6 text-danger">{state.errors.form}</p>
       ) : null}
 
       <Button
