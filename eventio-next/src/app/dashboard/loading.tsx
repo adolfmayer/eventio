@@ -25,36 +25,46 @@ export default function DashboardLoading() {
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
-        <header className="flex items-center justify-between pt-2">
-          <Link href="/dashboard" aria-label="Eventio">
-            <span className="text-[28px] font-semibold text-text">E.</span>
-          </Link>
-          <div className="h-10 w-32 rounded bg-white/60" />
-        </header>
-
-        <div className="mt-10 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <div className="h-6 w-24 rounded bg-white/60" />
-            <div className="h-6 w-28 rounded bg-white/60" />
-            <div className="h-6 w-24 rounded bg-white/60" />
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded bg-white/60" />
-            <div className="h-6 w-6 rounded bg-white/60" />
-          </div>
+        <div className="mx-auto w-full xl:max-w-[1360px]">
+          <header className="flex items-center justify-between pt-2">
+            <Link href="/dashboard" aria-label="Eventio">
+              <span className="text-[28px] font-semibold text-text">E.</span>
+            </Link>
+            <div className="h-10 w-32 rounded bg-white/60" />
+          </header>
         </div>
 
-        <div className="grid min-h-[520px] place-items-center">
-          <div
-            className="h-[63px] w-[63px] animate-spin rounded-full"
-            style={{
-              background:
-                "conic-gradient(from 90deg at 50% 50%, rgba(255, 255, 255, 0.187047) -23.59deg, rgba(0, 0, 0, 0.244084) 6.81deg, rgba(255, 255, 255, 0.187047) 336.41deg, rgba(0, 0, 0, 0.244084) 366.81deg)",
-              mask: "radial-gradient(transparent 58%, black 59%)",
-              WebkitMask: "radial-gradient(transparent 58%, black 59%)",
-            }}
-            aria-label="Loading"
-          />
+        <div className="mx-auto w-full xl:max-w-[1200px]">
+          <div className="mt-10 flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <div className="h-6 w-24 rounded bg-white/60" />
+              <div className="h-6 w-28 rounded bg-white/60" />
+              <div className="h-6 w-24 rounded bg-white/60" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded bg-white/60" />
+              <div className="h-6 w-6 rounded bg-white/60" />
+            </div>
+          </div>
+
+          <section className="mt-10 grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-2 lg:gap-x-4 xl:grid-cols-3 xl:gap-x-[15px]">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-[296px] rounded-[2px] bg-white p-8 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]"
+              >
+                <div className="h-6 w-40 rounded bg-[#F0F1F4]" />
+                <div className="mt-3 h-10 w-56 rounded bg-[#ECEFF3]" />
+                <div className="mt-2 h-6 w-28 rounded bg-[#F0F1F4]" />
+                <div className="mt-6 h-6 w-full rounded bg-[#ECEFF3]" />
+                <div className="mt-2 h-6 w-4/5 rounded bg-[#ECEFF3]" />
+                <div className="mt-16 flex items-center justify-between">
+                  <div className="h-6 w-24 rounded bg-[#F0F1F4]" />
+                  <div className="h-8 w-[100px] rounded-[4px] bg-[#ECEFF3]" />
+                </div>
+              </div>
+            ))}
+          </section>
         </div>
       </div>
 
