@@ -1,14 +1,14 @@
-import Link from "next/link";
-import Image from "next/image";
+import Link from 'next/link';
+import Image from 'next/image';
 
-import { Button } from "@/components/ui/button";
-import { DashboardProfileMenu } from "@/components/shared/dashboard-profile-menu";
-import { joinEventAction, leaveEventAction } from "@/features/events/actions";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+import { Button } from '@/components/ui/button';
+import { DashboardProfileMenu } from '@/components/shared/dashboard-profile-menu';
+import { joinEventAction, leaveEventAction } from '@/features/events/actions';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: "Dashboard Detail",
+  title: 'Dashboard Detail',
 };
 
 export default async function DashboardDetailPage({
@@ -18,68 +18,79 @@ export default async function DashboardDetailPage({
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) redirect("/login?redirectTo=/dashboard-detail");
+  if (!auth.user) redirect('/login?redirectTo=/dashboard-detail');
 
   const params = (await searchParams) ?? {};
   const eventId = params.id;
 
   if (!eventId) {
     const { data: first } = await supabase
-      .from("events")
-      .select("id")
-      .order("starts_at", { ascending: true })
+      .from('events')
+      .select('id')
+      .order('starts_at', { ascending: true })
       .limit(1)
       .maybeSingle();
 
-    if (!first?.id) redirect("/dashboard");
+    if (!first?.id) redirect('/dashboard');
     redirect(`/dashboard-detail?id=${encodeURIComponent(first.id)}`);
   }
 
-  const [{ data: event, error: eventError }, { data: attendees, count: attendeesCount }] =
-    await Promise.all([
-      supabase
-        .from("events")
-        .select("id,title,description,location,starts_at,capacity,owner_id")
-        .eq("id", eventId)
-        .single(),
-      supabase
-        .from("event_attendees")
-        .select("user_id", { count: "exact" })
-        .eq("event_id", eventId),
-    ]);
+  const [
+    { data: event, error: eventError },
+    { data: attendees, count: attendeesCount },
+  ] = await Promise.all([
+    supabase
+      .from('events')
+      .select('id,title,description,location,starts_at,capacity,owner_id')
+      .eq('id', eventId)
+      .single(),
+    supabase
+      .from('event_attendees')
+      .select('user_id', { count: 'exact' })
+      .eq('event_id', eventId),
+  ]);
 
   if (eventError || !event) {
-    redirect(`/dashboard?error=${encodeURIComponent(eventError?.message ?? "Event not found")}`);
+    redirect(
+      `/dashboard?error=${encodeURIComponent(eventError?.message ?? 'Event not found')}`
+    );
   }
 
   const attendeeUserIds = (attendees ?? []).map((a) => a.user_id);
   const isOwner = event.owner_id === auth.user.id;
   const isJoined = attendeeUserIds.includes(auth.user.id);
 
-  const [{ data: ownerProfile }, { data: attendeeProfiles }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("display_name")
-      .eq("id", event.owner_id)
-      .maybeSingle(),
-    attendeeUserIds.length
-      ? supabase.from("profiles").select("id,display_name").in("id", attendeeUserIds)
-      : Promise.resolve({ data: [] as Array<{ id: string; display_name: string }> }),
-  ]);
+  const [{ data: ownerProfile }, { data: attendeeProfiles }] =
+    await Promise.all([
+      supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', event.owner_id)
+        .maybeSingle(),
+      attendeeUserIds.length
+        ? supabase
+            .from('profiles')
+            .select('id,display_name')
+            .in('id', attendeeUserIds)
+        : Promise.resolve({
+            data: [] as Array<{ id: string; display_name: string }>,
+          }),
+    ]);
 
   const attendeeNameById = new Map(
-    (attendeeProfiles ?? []).map((p) => [p.id, p.display_name]),
+    (attendeeProfiles ?? []).map((p) => [p.id, p.display_name])
   );
   const attendeePills = attendeeUserIds.map((id) => ({
     id,
     isCurrentUser: id === auth.user.id,
-    label: id === auth.user.id ? "You" : attendeeNameById.get(id) ?? "Attendee",
+    label:
+      id === auth.user.id ? 'You' : (attendeeNameById.get(id) ?? 'Attendee'),
   }));
 
   const authorName =
     ownerProfile?.display_name ??
     (auth.user.user_metadata?.full_name as string | undefined) ??
-    "Event author";
+    'Event author';
   const capacityText =
     event.capacity == null
       ? `${attendeesCount ?? 0} attending`
@@ -89,7 +100,7 @@ export default async function DashboardDetailPage({
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
-        <div className="mx-auto w-full xl:max-w-[1200px]">
+        <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="relative flex items-center justify-between pt-2">
             <Link href="/dashboard" aria-label="Eventio">
               <span className="text-[28px] font-semibold text-text">E.</span>
@@ -111,12 +122,14 @@ export default async function DashboardDetailPage({
 
             <DashboardProfileMenu
               fullName={
-                (auth.user.user_metadata?.full_name as string | undefined) ?? null
+                (auth.user.user_metadata?.full_name as string | undefined) ??
+                null
               }
               email={auth.user.email ?? null}
             />
           </header>
-
+        </div>
+        <div className="mx-auto w-full xl:max-w-[1200px]">
           <p className="mt-10 text-[12px] uppercase tracking-[1px] text-[#A9AEB4]">
             DETAIL EVENT: #{detailId}
           </p>
@@ -130,12 +143,16 @@ export default async function DashboardDetailPage({
                 <h1 className="mt-2 text-[22px] leading-[48px] text-text lg:text-[45px] lg:leading-[48px]">
                   {event.title}
                 </h1>
-                <p className="-mt-2 text-[14px] leading-6 text-[#7D7878]">{authorName}</p>
+                <p className="-mt-2 text-[14px] leading-6 text-[#7D7878]">
+                  {authorName}
+                </p>
                 <p className="mt-6 line-clamp-2 text-[16px] leading-6 text-[#949EA8]">
-                  {event.description ?? "—"}
+                  {event.description ?? '—'}
                 </p>
                 {params.error ? (
-                  <p className="mt-2 text-[14px] leading-6 text-danger">{params.error}</p>
+                  <p className="mt-2 text-[14px] leading-6 text-danger">
+                    {params.error}
+                  </p>
                 ) : null}
 
                 <div className="mt-auto flex items-center justify-between pt-8">
@@ -147,11 +164,15 @@ export default async function DashboardDetailPage({
                       height={24}
                       aria-hidden="true"
                     />
-                    <p className="text-[14px] leading-6 text-[#949EA8]">{capacityText}</p>
+                    <p className="text-[14px] leading-6 text-[#949EA8]">
+                      {capacityText}
+                    </p>
                   </div>
 
                   {isOwner ? (
-                    <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
+                    <Link
+                      href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
+                    >
                       <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
                         Edit
                       </Button>
@@ -185,8 +206,8 @@ export default async function DashboardDetailPage({
                         key={attendee.id}
                         className={
                           attendee.isCurrentUser
-                            ? "rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]"
-                            : "rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]"
+                            ? 'rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]'
+                            : 'rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]'
                         }
                       >
                         {attendee.label}
@@ -229,4 +250,3 @@ export default async function DashboardDetailPage({
     </main>
   );
 }
-

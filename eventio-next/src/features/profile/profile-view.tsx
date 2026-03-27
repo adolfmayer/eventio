@@ -33,7 +33,14 @@ type ProfileViewProps = {
 
 function GridIcon({ className }: { className?: string }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -46,8 +53,20 @@ function GridIcon({ className }: { className?: string }) {
 
 function ListIcon({ className }: { className?: string }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
-      <path fillRule="evenodd" clipRule="evenodd" d="M4 18H21V12H4V18ZM4 5V11H21V5H4Z" fill="currentColor" />
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 18H21V12H4V18ZM4 5V11H21V5H4Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -78,7 +97,8 @@ function SmallActionButton({
   kind: 'join' | 'leave' | 'edit';
   children: React.ReactNode;
 }) {
-  const base = 'h-8 w-[100px] rounded-[4px] text-[14px] leading-[14px] uppercase tracking-[1px] font-normal';
+  const base =
+    'h-8 w-[100px] rounded-[4px] text-[14px] leading-[14px] uppercase tracking-[1px] font-normal';
   const byKind: Record<typeof kind, string> = {
     join: 'bg-brand text-white hover:bg-brandStrong',
     leave: 'bg-danger text-white hover:bg-dangerStrong',
@@ -92,35 +112,72 @@ function SmallActionButton({
   );
 }
 
-function EventCard({ event, viewMode, currentUserId }: { event: ProfileEvent; viewMode: ViewMode; currentUserId: string }) {
+function EventCard({
+  event,
+  viewMode,
+  currentUserId,
+}: {
+  event: ProfileEvent;
+  viewMode: ViewMode;
+  currentUserId: string;
+}) {
   const attendeeCount = event.event_attendees.length;
   const isOwner = event.owner_id === currentUserId;
-  const isAttendee = event.event_attendees.some((a) => a.user_id === currentUserId);
-  const action: 'edit' | 'leave' | 'join' = isOwner ? 'edit' : isAttendee ? 'leave' : 'join';
-  const capacityText = event.capacity == null ? `${attendeeCount} attending` : `${attendeeCount} of ${event.capacity}`;
+  const isAttendee = event.event_attendees.some(
+    (a) => a.user_id === currentUserId
+  );
+  const action: 'edit' | 'leave' | 'join' = isOwner
+    ? 'edit'
+    : isAttendee
+      ? 'leave'
+      : 'join';
+  const capacityText =
+    event.capacity == null
+      ? `${attendeeCount} attending`
+      : `${attendeeCount} of ${event.capacity}`;
   const description = event.description ?? '';
 
   if (viewMode === 'list') {
     return (
       <div className="relative w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-        <Link href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`} className="absolute inset-0 z-0" aria-label={`Open ${event.title}`} />
+        <Link
+          href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
+          className="absolute inset-0 z-0"
+          aria-label={`Open ${event.title}`}
+        />
         <div className="flex items-center gap-4 px-6 py-3 lg:px-8">
-          <p className="w-[220px] truncate text-[18px] leading-[48px] text-text">{event.title}</p>
-          <p className="hidden flex-1 truncate text-[16px] leading-6 text-[#949EA8] lg:block">{description}</p>
-          <p className="hidden w-[140px] truncate text-[14px] leading-6 text-[#7D7878] lg:block">{event.authorName}</p>
-          <p className="hidden w-[180px] text-[14px] leading-6 text-[#CACDD0] lg:block">{formatCardDate(event.starts_at)}</p>
-          <p className="hidden w-[120px] text-[14px] leading-6 text-[#949EA8] lg:block">{capacityText}</p>
+          <p className="w-[220px] truncate text-[18px] leading-[48px] text-text">
+            {event.title}
+          </p>
+          <p className="hidden flex-1 truncate text-[16px] leading-6 text-[#949EA8] lg:block">
+            {description}
+          </p>
+          <p className="hidden w-[140px] truncate text-[14px] leading-6 text-[#7D7878] lg:block">
+            {event.authorName}
+          </p>
+          <p className="hidden w-[180px] text-[14px] leading-6 text-[#CACDD0] lg:block">
+            {formatCardDate(event.starts_at)}
+          </p>
+          <p className="hidden w-[120px] text-[14px] leading-6 text-[#949EA8] lg:block">
+            {capacityText}
+          </p>
           <div className="relative z-10 ml-auto">
             {action === 'edit' ? (
-              <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
+              <Link
+                href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
+              >
                 <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
                   Edit
                 </Button>
               </Link>
             ) : (
-              <form action={action === 'leave' ? leaveEventAction : joinEventAction}>
+              <form
+                action={action === 'leave' ? leaveEventAction : joinEventAction}
+              >
                 <input type="hidden" name="eventId" value={event.id} />
-                <SmallActionButton kind={action}>{action === 'leave' ? 'Leave' : 'Join'}</SmallActionButton>
+                <SmallActionButton kind={action}>
+                  {action === 'leave' ? 'Leave' : 'Join'}
+                </SmallActionButton>
               </form>
             )}
           </div>
@@ -131,27 +188,53 @@ function EventCard({ event, viewMode, currentUserId }: { event: ProfileEvent; vi
 
   return (
     <div className="relative h-[296px] w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
-      <Link href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`} className="absolute inset-0 z-0" aria-label={`Open ${event.title}`} />
+      <Link
+        href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
+        className="absolute inset-0 z-0"
+        aria-label={`Open ${event.title}`}
+      />
       <div className="flex h-full flex-col p-6 lg:p-8">
-        <p className="text-[14px] leading-6 text-[#CACDD0]">{formatCardDate(event.starts_at)}</p>
-        <h2 className="mt-2 text-[22px] leading-[48px] text-text">{event.title}</h2>
-        <p className="-mt-2 truncate text-[14px] leading-6 text-[#7D7878]">{event.authorName}</p>
-        <p className="mt-6 line-clamp-2 text-[16px] leading-6 text-[#949EA8]">{description}</p>
+        <p className="text-[14px] leading-6 text-[#CACDD0]">
+          {formatCardDate(event.starts_at)}
+        </p>
+        <h2 className="mt-2 text-[22px] leading-[48px] text-text">
+          {event.title}
+        </h2>
+        <p className="-mt-2 truncate text-[14px] leading-6 text-[#7D7878]">
+          {event.authorName}
+        </p>
+        <p className="mt-6 line-clamp-2 text-[16px] leading-6 text-[#949EA8]">
+          {description}
+        </p>
         <div className="relative z-10 mt-auto flex items-center justify-between pt-8">
           <div className="flex items-center gap-1.5">
-            <Image src="/eventio/dashboard/icons/icon-user.svg" alt="" width={24} height={24} aria-hidden="true" />
-            <p className="text-[14px] leading-6 text-[#949EA8]">{capacityText}</p>
+            <Image
+              src="/eventio/dashboard/icons/icon-user.svg"
+              alt=""
+              width={24}
+              height={24}
+              aria-hidden="true"
+            />
+            <p className="text-[14px] leading-6 text-[#949EA8]">
+              {capacityText}
+            </p>
           </div>
           {action === 'edit' ? (
-            <Link href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}>
+            <Link
+              href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
+            >
               <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
                 Edit
               </Button>
             </Link>
           ) : (
-            <form action={action === 'leave' ? leaveEventAction : joinEventAction}>
+            <form
+              action={action === 'leave' ? leaveEventAction : joinEventAction}
+            >
               <input type="hidden" name="eventId" value={event.id} />
-              <SmallActionButton kind={action}>{action === 'leave' ? 'Leave' : 'Join'}</SmallActionButton>
+              <SmallActionButton kind={action}>
+                {action === 'leave' ? 'Leave' : 'Join'}
+              </SmallActionButton>
             </form>
           )}
         </div>
@@ -167,49 +250,91 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
-        <div className="mx-auto w-full xl:max-w-[1200px]">
+        <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="flex items-center justify-between pt-2">
             <Link href="/dashboard" aria-label="Eventio">
-              <span className="text-[22px] font-semibold text-text sm:text-[28px]">E.</span>
+              <span className="text-[22px] font-semibold text-text sm:text-[28px]">
+                E.
+              </span>
             </Link>
-            <DashboardProfileMenu fullName={currentUser.fullName} email={currentUser.email} />
+            <DashboardProfileMenu
+              fullName={currentUser.fullName}
+              email={currentUser.email}
+            />
           </header>
-
+        </div>
+        <div className="mx-auto w-full xl:max-w-[1200px]">
           <section className="relative mt-10 rounded-[2px] bg-white pb-10 pt-16 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
             <div className="absolute left-1/2 top-0 flex h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#D9DCE1] text-[28px] font-semibold text-[#949EA8]">
               {initials}
             </div>
-            <p className="text-center text-[18px] leading-[48px] text-[#323C46]">{currentUser.fullName ?? '—'}</p>
-            <p className="-mt-3 text-center text-[14px] leading-6 text-[#949EA8]">{currentUser.email ?? '—'}</p>
+            <p className="text-center text-[18px] leading-[48px] text-[#323C46]">
+              {currentUser.fullName ?? '—'}
+            </p>
+            <p className="-mt-3 text-center text-[14px] leading-6 text-[#949EA8]">
+              {currentUser.email ?? '—'}
+            </p>
           </section>
 
           <section className="mt-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-[22px] leading-[48px] text-[#323C46] sm:text-[28px]">My events</h2>
+              <h2 className="text-[22px] leading-[48px] text-[#323C46] sm:text-[28px]">
+                My events
+              </h2>
               <div className="flex items-center gap-2">
-                <button type="button" onClick={() => setViewMode('grid')} className="inline-flex h-6 w-6 items-center justify-center" aria-label="Grid view">
-                  <GridIcon className={cn(viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]')} />
+                <button
+                  type="button"
+                  onClick={() => setViewMode('grid')}
+                  className="inline-flex h-6 w-6 items-center justify-center"
+                  aria-label="Grid view"
+                >
+                  <GridIcon
+                    className={cn(
+                      viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                    )}
+                  />
                 </button>
-                <button type="button" onClick={() => setViewMode('list')} className="inline-flex h-6 w-6 items-center justify-center" aria-label="List view">
-                  <ListIcon className={cn(viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]')} />
+                <button
+                  type="button"
+                  onClick={() => setViewMode('list')}
+                  className="inline-flex h-6 w-6 items-center justify-center"
+                  aria-label="List view"
+                >
+                  <ListIcon
+                    className={cn(
+                      viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                    )}
+                  />
                 </button>
               </div>
             </div>
 
             {events.length === 0 ? (
               <div className="mt-4 rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-                <p className="text-[16px] leading-6 text-[#949EA8]">No events</p>
+                <p className="text-[16px] leading-6 text-[#949EA8]">
+                  No events
+                </p>
               </div>
             ) : viewMode === 'grid' ? (
               <div className="mt-4 grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-2 lg:gap-x-4 xl:grid-cols-[repeat(auto-fit,minmax(390px,390px))] xl:justify-start xl:gap-x-[15px] xl:gap-y-4">
                 {events.map((event) => (
-                  <EventCard key={event.id} event={event} viewMode="grid" currentUserId={currentUser.id} />
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    viewMode="grid"
+                    currentUserId={currentUser.id}
+                  />
                 ))}
               </div>
             ) : (
               <div className="mt-4 space-y-4">
                 {events.map((event) => (
-                  <EventCard key={event.id} event={event} viewMode="list" currentUserId={currentUser.id} />
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    viewMode="list"
+                    currentUserId={currentUser.id}
+                  />
                 ))}
               </div>
             )}
@@ -219,4 +344,3 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
     </main>
   );
 }
-

@@ -365,160 +365,165 @@ export function DashboardView({
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
+        <div className="mx-auto w-full xl:max-w-[1360px]">
+          <header className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-4">
+              <Link href="/dashboard" aria-label="Eventio">
+                <span className="text-[28px] font-semibold text-text">E.</span>
+              </Link>
+            </div>
+
+            <DashboardProfileMenu
+              fullName={currentUser.fullName}
+              email={currentUser.email}
+            />
+          </header>
+        </div>
         <div className="mx-auto w-full xl:max-w-[1200px]">
-        <header className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" aria-label="Eventio">
-              <span className="text-[28px] font-semibold text-text">E.</span>
-            </Link>
+          <div className="mt-10 flex items-center justify-between">
+            <div className="relative sm:hidden" ref={filterMenuRef}>
+              <button
+                type="button"
+                className="inline-flex h-6 w-[139px] items-center justify-between"
+                aria-haspopup="menu"
+                aria-expanded={filterOpen}
+                onClick={() => setFilterOpen((v) => !v)}
+              >
+                <span className="text-[12px] leading-6 tracking-[1px] uppercase">
+                  <span className="text-[#A9AEB4]">SHOW:</span>{' '}
+                  <span className="text-[#323C46]">
+                    {FILTER_LABELS[filterMode]}
+                  </span>
+                </span>
+                <Image
+                  src="/eventio/dashboard/icons/icon-arrow.svg"
+                  alt=""
+                  width={10}
+                  height={5}
+                  aria-hidden="true"
+                />
+              </button>
+
+              {filterOpen ? (
+                <div
+                  role="menu"
+                  className="absolute left-0 top-full z-50 mt-2 w-[162px] rounded-[14px] bg-white py-1 shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
+                >
+                  {(['all', 'future', 'past'] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      role="menuitem"
+                      className={cn(
+                        'block w-full px-4 py-3 text-left text-[12px] leading-6 tracking-[1px] uppercase hover:bg-surfaceAlt',
+                        mode === filterMode
+                          ? 'text-[#323C46]'
+                          : 'text-[#A9AEB4]'
+                      )}
+                      onClick={() => {
+                        setFilterMode(mode);
+                        setFilterOpen(false);
+                      }}
+                    >
+                      {FILTER_LABELS[mode]}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
+            <nav className="hidden items-center gap-8 sm:flex">
+              <button
+                type="button"
+                onClick={() => setFilterMode('all')}
+                className={cn(
+                  'text-[12px] leading-6 tracking-[1px] uppercase',
+                  filterMode === 'all' ? 'text-text' : 'text-[#A9AEB4]'
+                )}
+              >
+                ALL EVENTS
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterMode('future')}
+                className={cn(
+                  'text-[12px] leading-6 tracking-[1px] uppercase',
+                  filterMode === 'future' ? 'text-text' : 'text-[#A9AEB4]'
+                )}
+              >
+                FUTURE EVENTS
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterMode('past')}
+                className={cn(
+                  'text-[12px] leading-6 tracking-[1px] uppercase',
+                  filterMode === 'past' ? 'text-text' : 'text-[#A9AEB4]'
+                )}
+              >
+                PAST EVENTS
+              </button>
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className="inline-flex h-6 w-6 items-center justify-center"
+                aria-label="Grid view"
+              >
+                <GridIcon
+                  className={cn(
+                    viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                  )}
+                />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className="inline-flex h-6 w-6 items-center justify-center"
+                aria-label="List view"
+              >
+                <ListIcon
+                  className={cn(
+                    viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                  )}
+                />
+              </button>
+            </div>
           </div>
 
-          <DashboardProfileMenu
-            fullName={currentUser.fullName}
-            email={currentUser.email}
-          />
-        </header>
-
-        <div className="mt-10 flex items-center justify-between">
-          <div className="relative sm:hidden" ref={filterMenuRef}>
-            <button
-              type="button"
-              className="inline-flex h-6 w-[139px] items-center justify-between"
-              aria-haspopup="menu"
-              aria-expanded={filterOpen}
-              onClick={() => setFilterOpen((v) => !v)}
-            >
-              <span className="text-[12px] leading-6 tracking-[1px] uppercase">
-                <span className="text-[#A9AEB4]">SHOW:</span>{' '}
-                <span className="text-[#323C46]">{FILTER_LABELS[filterMode]}</span>
-              </span>
-              <Image
-                src="/eventio/dashboard/icons/icon-arrow.svg"
-                alt=""
-                width={10}
-                height={5}
-                aria-hidden="true"
-              />
-            </button>
-
-            {filterOpen ? (
-              <div
-                role="menu"
-                className="absolute left-0 top-full z-50 mt-2 w-[162px] rounded-[14px] bg-white py-1 shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
-              >
-                {(['all', 'future', 'past'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    role="menuitem"
-                    className={cn(
-                      'block w-full px-4 py-3 text-left text-[12px] leading-6 tracking-[1px] uppercase hover:bg-surfaceAlt',
-                      mode === filterMode ? 'text-[#323C46]' : 'text-[#A9AEB4]'
-                    )}
-                    onClick={() => {
-                      setFilterMode(mode);
-                      setFilterOpen(false);
-                    }}
-                  >
-                    {FILTER_LABELS[mode]}
-                  </button>
-                ))}
+          <section className="mt-10">
+            {errorMessage ? (
+              <div className="rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+                <p className="text-sm text-dangerStrong">{errorMessage}</p>
               </div>
             ) : null}
-          </div>
 
-          <nav className="hidden items-center gap-8 sm:flex">
-            <button
-              type="button"
-              onClick={() => setFilterMode('all')}
-              className={cn(
-                'text-[12px] leading-6 tracking-[1px] uppercase',
-                filterMode === 'all' ? 'text-text' : 'text-[#A9AEB4]'
-              )}
-            >
-              ALL EVENTS
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode('future')}
-              className={cn(
-                'text-[12px] leading-6 tracking-[1px] uppercase',
-                filterMode === 'future' ? 'text-text' : 'text-[#A9AEB4]'
-              )}
-            >
-              FUTURE EVENTS
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode('past')}
-              className={cn(
-                'text-[12px] leading-6 tracking-[1px] uppercase',
-                filterMode === 'past' ? 'text-text' : 'text-[#A9AEB4]'
-              )}
-            >
-              PAST EVENTS
-            </button>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setViewMode('grid')}
-              className="inline-flex h-6 w-6 items-center justify-center"
-              aria-label="Grid view"
-            >
-              <GridIcon
-                className={cn(
-                  viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
-                )}
-              />
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode('list')}
-              className="inline-flex h-6 w-6 items-center justify-center"
-              aria-label="List view"
-            >
-              <ListIcon
-                className={cn(
-                  viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
-                )}
-              />
-            </button>
-          </div>
-        </div>
-
-        <section className="mt-10">
-          {errorMessage ? (
-            <div className="rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-              <p className="text-sm text-dangerStrong">{errorMessage}</p>
-            </div>
-          ) : null}
-
-          {viewMode === 'grid' ? (
-            <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-2 lg:gap-x-4 xl:grid-cols-[repeat(auto-fit,minmax(390px,390px))] xl:justify-start xl:gap-x-[15px] xl:gap-y-4">
-              {visibleEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  viewMode="grid"
-                  event={event}
-                  currentUserId={currentUser.id}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {visibleEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  viewMode="list"
-                  event={event}
-                  currentUserId={currentUser.id}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+            {viewMode === 'grid' ? (
+              <div className="grid gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-2 lg:gap-x-4 xl:grid-cols-[repeat(auto-fit,minmax(390px,390px))] xl:justify-start xl:gap-x-[15px] xl:gap-y-4">
+                {visibleEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    viewMode="grid"
+                    event={event}
+                    currentUserId={currentUser.id}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {visibleEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    viewMode="list"
+                    event={event}
+                    currentUserId={currentUser.id}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       </div>
 

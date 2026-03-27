@@ -1,13 +1,16 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { DashboardProfileMenu } from "@/components/shared/dashboard-profile-menu";
-import { deleteEventAction, updateEventAction } from "@/features/events/actions";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+import { DashboardProfileMenu } from '@/components/shared/dashboard-profile-menu';
+import {
+  deleteEventAction,
+  updateEventAction,
+} from '@/features/events/actions';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: "Dashboard Detail Edit",
+  title: 'Dashboard Detail Edit',
 };
 
 export default async function DashboardDetailEditPage({
@@ -17,33 +20,40 @@ export default async function DashboardDetailEditPage({
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) redirect("/login?redirectTo=/dashboard-detail-edit");
+  if (!auth.user) redirect('/login?redirectTo=/dashboard-detail-edit');
 
   const params = (await searchParams) ?? {};
   const eventId = params.id;
-  if (!eventId) redirect("/dashboard");
+  if (!eventId) redirect('/dashboard');
 
   const [{ data: event, error }, { data: attendees }] = await Promise.all([
     supabase
-      .from("events")
-      .select("id,title,description,location,starts_at,capacity,owner_id")
-      .eq("id", eventId)
+      .from('events')
+      .select('id,title,description,location,starts_at,capacity,owner_id')
+      .eq('id', eventId)
       .single(),
-    supabase.from("event_attendees").select("user_id").eq("event_id", eventId),
+    supabase.from('event_attendees').select('user_id').eq('event_id', eventId),
   ]);
 
-  if (error || !event) redirect("/dashboard");
-  if (event.owner_id !== auth.user.id) redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+  if (error || !event) redirect('/dashboard');
+  if (event.owner_id !== auth.user.id)
+    redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
 
   const attendeeUserIds = (attendees ?? []).map((a) => a.user_id);
   const { data: attendeeProfiles } = attendeeUserIds.length
-    ? await supabase.from("profiles").select("id,display_name").in("id", attendeeUserIds)
+    ? await supabase
+        .from('profiles')
+        .select('id,display_name')
+        .in('id', attendeeUserIds)
     : { data: [] as Array<{ id: string; display_name: string }> };
-  const attendeeNameById = new Map((attendeeProfiles ?? []).map((p) => [p.id, p.display_name]));
+  const attendeeNameById = new Map(
+    (attendeeProfiles ?? []).map((p) => [p.id, p.display_name])
+  );
   const attendeePills = attendeeUserIds.map((id) => ({
     id,
     isCurrentUser: id === auth.user.id,
-    label: id === auth.user.id ? "You" : attendeeNameById.get(id) ?? "Attendee",
+    label:
+      id === auth.user.id ? 'You' : (attendeeNameById.get(id) ?? 'Attendee'),
   }));
 
   const startsAtDate = new Date(event.starts_at);
@@ -55,7 +65,7 @@ export default async function DashboardDetailEditPage({
   return (
     <main className="min-h-screen bg-[#F9F9FB]">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
-        <div className="mx-auto w-full xl:max-w-[1200px]">
+        <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="relative flex items-center justify-between pt-2">
             <Link href="/dashboard" aria-label="Eventio">
               <span className="text-[28px] font-semibold text-text">E.</span>
@@ -77,12 +87,14 @@ export default async function DashboardDetailEditPage({
 
             <DashboardProfileMenu
               fullName={
-                (auth.user.user_metadata?.full_name as string | undefined) ?? null
+                (auth.user.user_metadata?.full_name as string | undefined) ??
+                null
               }
               email={auth.user.email ?? null}
             />
           </header>
-
+        </div>
+        <div className="mx-auto w-full xl:max-w-[1200px]">
           <div className="mt-10 flex items-center justify-between">
             <p className="text-[12px] uppercase tracking-[1px] text-[#A9AEB4]">
               DETAIL EVENT: #{detailId}
@@ -107,13 +119,21 @@ export default async function DashboardDetailEditPage({
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
             <article className="rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px]">
-              <form id="edit-event-form" action={updateEventAction} className="p-6 lg:p-8">
+              <form
+                id="edit-event-form"
+                action={updateEventAction}
+                className="p-6 lg:p-8"
+              >
                 <input type="hidden" name="eventId" value={event.id} />
                 {paramsError ? (
-                  <p className="mb-4 text-[14px] leading-6 text-danger">{paramsError}</p>
+                  <p className="mb-4 text-[14px] leading-6 text-danger">
+                    {paramsError}
+                  </p>
                 ) : null}
                 <label className="block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">Date</span>
+                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                    Date
+                  </span>
                   <input
                     name="date"
                     type="date"
@@ -124,7 +144,9 @@ export default async function DashboardDetailEditPage({
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">Time</span>
+                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                    Time
+                  </span>
                   <input
                     name="time"
                     type="time"
@@ -135,7 +157,9 @@ export default async function DashboardDetailEditPage({
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">Title</span>
+                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                    Title
+                  </span>
                   <input
                     name="title"
                     type="text"
@@ -147,34 +171,40 @@ export default async function DashboardDetailEditPage({
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">Description</span>
+                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                    Description
+                  </span>
                   <input
                     name="description"
                     type="text"
-                    defaultValue={event.description ?? ""}
+                    defaultValue={event.description ?? ''}
                     className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
                     maxLength={2000}
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">Location</span>
+                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                    Location
+                  </span>
                   <input
                     name="location"
                     type="text"
-                    defaultValue={event.location ?? ""}
+                    defaultValue={event.location ?? ''}
                     className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
                     maxLength={120}
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">Capacity</span>
+                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                    Capacity
+                  </span>
                   <input
                     name="capacity"
                     type="number"
                     min={1}
-                    defaultValue={event.capacity ?? ""}
+                    defaultValue={event.capacity ?? ''}
                     className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
                   />
                 </label>
@@ -191,8 +221,8 @@ export default async function DashboardDetailEditPage({
                         key={attendee.id}
                         className={
                           attendee.isCurrentUser
-                            ? "rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]"
-                            : "rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]"
+                            ? 'rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]'
+                            : 'rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]'
                         }
                       >
                         {attendee.label}
@@ -227,5 +257,3 @@ export default async function DashboardDetailEditPage({
     </main>
   );
 }
-
-
