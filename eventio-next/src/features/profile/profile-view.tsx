@@ -187,7 +187,7 @@ function EventCard({
   }
 
   return (
-    <div className="relative h-[296px] w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
+    <div className="relative h-[296px] min-w-0 w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
       <Link
         href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
         className="absolute inset-0 z-0"
@@ -197,7 +197,7 @@ function EventCard({
         <p className="text-[14px] leading-6 text-[#CACDD0]">
           {formatCardDate(event.starts_at)}
         </p>
-        <h2 className="mt-2 text-[22px] leading-[48px] text-text">
+        <h2 className="mt-2 truncate text-[22px] leading-[48px] text-text">
           {event.title}
         </h2>
         <p className="-mt-2 truncate text-[14px] leading-6 text-[#7D7878]">
