@@ -117,6 +117,14 @@ export function LoginForm() {
           </button>
         </div>
       </label>
+      <div className="mt-4 text-right">
+        <Link
+          href="/forgot-password"
+          className="text-[14px] leading-6 text-[#949EA8] hover:text-text hover:underline"
+        >
+          Forgot password?
+        </Link>
+      </div>
 
       <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3] lg:hidden">
         Don&apos;t have account?
