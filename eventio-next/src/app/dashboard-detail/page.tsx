@@ -135,18 +135,18 @@ export default async function DashboardDetailPage({
           </p>
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
-            <article className="min-h-[296px] rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-              <div className="flex h-full flex-col p-6 lg:p-8">
+            <article className="min-h-[296px] min-w-0 rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+              <div className="flex h-full min-w-0 flex-col p-6 lg:p-8">
                 <p className="text-[14px] leading-6 text-[#CACDD0]">
                   {new Date(event.starts_at).toLocaleString()}
                 </p>
-                <h1 className="mt-2 text-[22px] leading-[48px] text-text lg:text-[45px] lg:leading-[48px]">
+                <h1 className="mt-2 break-all text-[22px] leading-[48px] text-text lg:text-[45px] lg:leading-[48px]">
                   {event.title}
                 </h1>
                 <p className="-mt-2 text-[14px] leading-6 text-[#7D7878]">
                   {authorName}
                 </p>
-                <p className="mt-6 text-[16px] leading-6 text-[#949EA8]">
+                <p className="mt-6 wrap-break-word text-[16px] leading-6 text-[#949EA8]">
                   {event.description ?? '—'}
                 </p>
                 {params.error ? (
