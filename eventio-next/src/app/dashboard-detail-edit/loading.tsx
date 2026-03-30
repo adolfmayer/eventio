@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function DashboardDetailEditLoading() {
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
         <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="relative flex items-center justify-between pt-2">
@@ -22,29 +22,29 @@ export default function DashboardDetailEditLoading() {
               Back to events
             </div>
 
-            <div className="h-10 w-32 rounded bg-white/60" />
+            <div className="h-10 w-32 rounded bg-surface/60" />
           </header>
         </div>
 
         <div className="mx-auto w-full xl:max-w-[1200px]">
           <div className="mt-10 flex items-center justify-between">
-            <div className="h-6 w-36 rounded bg-white/60" />
-            <div className="h-6 w-28 rounded bg-white/60" />
+            <div className="h-6 w-36 rounded bg-surface/60" />
+            <div className="h-6 w-28 rounded bg-surface/60" />
           </div>
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
-            <article className="rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px] lg:p-8">
+            <article className="rounded-[2px] bg-surface p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px] lg:p-8">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div key={index} className={index === 0 ? "" : "mt-6"}>
-                  <div className="h-6 w-20 rounded bg-[#F0F1F4]" />
-                  <div className="mt-1 h-8 w-full rounded bg-[#ECEFF3]" />
+                  <div className="h-6 w-20 rounded bg-surfaceAlt" />
+                  <div className="mt-1 h-8 w-full rounded bg-stroke/70" />
                 </div>
               ))}
             </article>
 
-            <aside className="h-[216px] rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px] lg:p-8">
-              <div className="h-8 w-28 rounded bg-[#ECEFF3]" />
-              <div className="mt-4 h-8 w-32 rounded-full bg-[#F0F1F4]" />
+            <aside className="h-[216px] rounded-[2px] bg-surface p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px] lg:p-8">
+              <div className="h-8 w-28 rounded bg-stroke/70" />
+              <div className="mt-4 h-8 w-32 rounded-full bg-surfaceAlt" />
             </aside>
           </section>
         </div>

@@ -63,7 +63,7 @@ export default async function DashboardDetailEditPage({
   const paramsError = params.error;
 
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
         <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="relative flex items-center justify-between pt-2">
@@ -96,14 +96,14 @@ export default async function DashboardDetailEditPage({
         </div>
         <div className="mx-auto w-full xl:max-w-[1200px]">
           <div className="mt-10 flex items-center justify-between">
-            <p className="text-[12px] uppercase tracking-[1px] text-[#A9AEB4]">
+            <p className="text-[12px] uppercase tracking-[1px] text-muted">
               DETAIL EVENT: #{detailId}
             </p>
             <form action={deleteEventAction}>
               <input type="hidden" name="eventId" value={event.id} />
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[1px] text-[#FF4081]"
+                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[1px] text-danger"
               >
                 <Image
                   src="/eventio/dashboard/icons/icon-delete.svg"
@@ -118,7 +118,7 @@ export default async function DashboardDetailEditPage({
           </div>
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
-            <article className="rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px]">
+            <article className="rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px]">
               <form
                 id="edit-event-form"
                 action={updateEventAction}
@@ -131,73 +131,73 @@ export default async function DashboardDetailEditPage({
                   </p>
                 ) : null}
                 <label className="block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                  <span className="text-[14px] leading-6 text-muted">
                     Date
                   </span>
                   <input
                     name="date"
                     type="date"
                     defaultValue={dateValue}
-                    className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
+                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
                     required
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                  <span className="text-[14px] leading-6 text-muted">
                     Time
                   </span>
                   <input
                     name="time"
                     type="time"
                     defaultValue={timeValue}
-                    className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
+                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
                     required
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                  <span className="text-[14px] leading-6 text-muted">
                     Title
                   </span>
                   <input
                     name="title"
                     type="text"
                     defaultValue={event.title}
-                    className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
+                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
                     required
                     maxLength={120}
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                  <span className="text-[14px] leading-6 text-muted">
                     Description
                   </span>
                   <input
                     name="description"
                     type="text"
                     defaultValue={event.description ?? ''}
-                    className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
+                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
                     maxLength={2000}
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                  <span className="text-[14px] leading-6 text-muted">
                     Location
                   </span>
                   <input
                     name="location"
                     type="text"
                     defaultValue={event.location ?? ''}
-                    className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
+                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
                     maxLength={120}
                   />
                 </label>
 
                 <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-[#D2D6DA]">
+                  <span className="text-[14px] leading-6 text-muted">
                     Capacity
                   </span>
                   <input
@@ -205,13 +205,13 @@ export default async function DashboardDetailEditPage({
                     type="number"
                     min={1}
                     defaultValue={event.capacity ?? ''}
-                    className="mt-1 block h-8 w-full border-b border-[#DAE0E7] bg-transparent pb-2 text-[16px] leading-6 text-[#323C46] outline-none"
+                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
                   />
                 </label>
               </form>
             </article>
 
-            <aside className="h-[216px] rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px]">
+            <aside className="h-[216px] rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px]">
               <div className="p-6 lg:p-8">
                 <h2 className="text-[22px] leading-8 text-text">Attendees</h2>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -221,15 +221,15 @@ export default async function DashboardDetailEditPage({
                         key={attendee.id}
                         className={
                           attendee.isCurrentUser
-                            ? 'rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]'
-                            : 'rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]'
+                            ? 'rounded-full border-2 border-stroke px-4 text-[13px] leading-[28px] text-muted'
+                            : 'rounded-full bg-surfaceAlt px-4 text-[13px] leading-8 text-muted'
                         }
                       >
                         {attendee.label}
                       </span>
                     ))
                   ) : (
-                    <span className="rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]">
+                    <span className="rounded-full bg-surfaceAlt px-4 text-[13px] leading-8 text-muted">
                       No attendees yet
                     </span>
                   )}

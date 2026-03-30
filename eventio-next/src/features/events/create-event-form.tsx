@@ -71,8 +71,8 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
   }, []);
 
   const inputClass = (error: string | null) =>
-    `mt-1 block h-8 w-full border-b bg-transparent text-[16px] leading-6 text-[#323C46] outline-none ${
-      error ? "border-[#FF4081]" : "border-[#DAE1E7]"
+    `mt-1 block h-8 w-full border-b bg-transparent text-[16px] leading-6 text-text outline-none ${
+      error ? "border-danger" : "border-stroke"
     }`;
 
   return (
@@ -80,46 +80,46 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
       <input type="hidden" name="from" value={from} />
 
       <label className="block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Title</span>
+        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Title</span>
         <input name="title" type="text" className={inputClass(errors.title)} required maxLength={120} />
-        {errors.title ? <p className="mt-2 text-[14px] leading-6 text-[#FF4081]">{errors.title}</p> : null}
+        {errors.title ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.title}</p> : null}
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Description</span>
+        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Description</span>
         <input name="description" type="text" className={inputClass(errors.description)} maxLength={2000} />
         {errors.description ? (
-          <p className="mt-2 text-[14px] leading-6 text-[#FF4081]">{errors.description}</p>
+          <p className="mt-2 text-[14px] leading-6 text-danger">{errors.description}</p>
         ) : null}
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Date</span>
+        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Date</span>
         <input name="date" type="date" className={inputClass(errors.date)} required />
-        {errors.date ? <p className="mt-2 text-[14px] leading-6 text-[#FF4081]">{errors.date}</p> : null}
+        {errors.date ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.date}</p> : null}
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Time</span>
+        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Time</span>
         <input name="time" type="time" className={inputClass(errors.time)} required />
-        {errors.time ? <p className="mt-2 text-[14px] leading-6 text-[#FF4081]">{errors.time}</p> : null}
+        {errors.time ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.time}</p> : null}
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Location</span>
+        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Location</span>
         <input name="location" type="text" className={inputClass(errors.location)} maxLength={120} />
         {errors.location ? (
-          <p className="mt-2 text-[14px] leading-6 text-[#FF4081]">{errors.location}</p>
+          <p className="mt-2 text-[14px] leading-6 text-danger">{errors.location}</p>
         ) : null}
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] sm:text-[18px]">Capacity</span>
+        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Capacity</span>
         <input name="capacity" type="number" min={1} className={inputClass(errors.capacity)} />
-        {errors.capacity ? <p className="mt-2 text-[14px] leading-6 text-[#FF4081]">{errors.capacity}</p> : null}
+        {errors.capacity ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.capacity}</p> : null}
       </label>
 
-      {errors.form ? <p className="mt-4 text-[14px] leading-6 text-[#FF4081]">{errors.form}</p> : null}
+      {errors.form ? <p className="mt-4 text-[14px] leading-6 text-danger">{errors.form}</p> : null}
 
       <button
         type="submit"

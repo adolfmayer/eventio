@@ -36,7 +36,7 @@ export default async function SignUpPage() {
   if (data.user) redirect("/dashboard");
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-bg">
       <aside className="fixed left-0 top-0 hidden h-screen w-[480px] overflow-hidden bg-text lg:block">
         <div className="absolute inset-0">
           <Image
@@ -66,7 +66,7 @@ export default async function SignUpPage() {
           </div>
 
           <div className="fixed right-[39px] top-10 z-20 hidden lg:block">
-            <p className="text-[14px] leading-6 text-[#C9CED3]">
+            <p className="text-[14px] leading-6 text-muted">
               Already have an account?
               <Link
                 href="/login"
@@ -83,7 +83,7 @@ export default async function SignUpPage() {
                 <h1 className="text-[22px] font-normal leading-[48px] text-text lg:text-[28px]">
                   Get started absolutely free.
                 </h1>
-                <p className="text-[14px] leading-6 text-[#949EA8] lg:text-[18px]">
+                <p className="text-[14px] leading-6 text-muted lg:text-[18px]">
                   Enter your details below.
                 </p>
               </div>

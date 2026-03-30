@@ -23,27 +23,27 @@ function PlusIcon({ className }: { className?: string }) {
 
 export default function DashboardLoading() {
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
         <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="flex items-center justify-between pt-2">
             <Link href="/dashboard" aria-label="Eventio">
               <span className="text-[28px] font-semibold text-text">E.</span>
             </Link>
-            <div className="h-10 w-32 rounded bg-white/60" />
+            <div className="h-10 w-32 rounded bg-surface/60" />
           </header>
         </div>
 
         <div className="mx-auto w-full xl:max-w-[1200px]">
           <div className="mt-10 flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <div className="h-6 w-24 rounded bg-white/60" />
-              <div className="h-6 w-28 rounded bg-white/60" />
-              <div className="h-6 w-24 rounded bg-white/60" />
+              <div className="h-6 w-24 rounded bg-surface/60" />
+              <div className="h-6 w-28 rounded bg-surface/60" />
+              <div className="h-6 w-24 rounded bg-surface/60" />
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded bg-white/60" />
-              <div className="h-6 w-6 rounded bg-white/60" />
+              <div className="h-6 w-6 rounded bg-surface/60" />
+              <div className="h-6 w-6 rounded bg-surface/60" />
             </div>
           </div>
 
@@ -51,16 +51,16 @@ export default function DashboardLoading() {
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="h-[296px] rounded-[2px] bg-white p-8 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]"
+                className="h-[296px] rounded-[2px] bg-surface p-8 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]"
               >
-                <div className="h-6 w-40 rounded bg-[#F0F1F4]" />
-                <div className="mt-3 h-10 w-56 rounded bg-[#ECEFF3]" />
-                <div className="mt-2 h-6 w-28 rounded bg-[#F0F1F4]" />
-                <div className="mt-6 h-6 w-full rounded bg-[#ECEFF3]" />
-                <div className="mt-2 h-6 w-4/5 rounded bg-[#ECEFF3]" />
+                <div className="h-6 w-40 rounded bg-surfaceAlt" />
+                <div className="mt-3 h-10 w-56 rounded bg-stroke/70" />
+                <div className="mt-2 h-6 w-28 rounded bg-surfaceAlt" />
+                <div className="mt-6 h-6 w-full rounded bg-stroke/70" />
+                <div className="mt-2 h-6 w-4/5 rounded bg-stroke/70" />
                 <div className="mt-16 flex items-center justify-between">
-                  <div className="h-6 w-24 rounded bg-[#F0F1F4]" />
-                  <div className="h-8 w-[100px] rounded-[4px] bg-[#ECEFF3]" />
+                  <div className="h-6 w-24 rounded bg-surfaceAlt" />
+                  <div className="h-8 w-[100px] rounded-[4px] bg-stroke/70" />
                 </div>
               </div>
             ))}
@@ -68,7 +68,7 @@ export default function DashboardLoading() {
         </div>
       </div>
 
-      <div className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)]">
+      <div className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-text shadow-[0px_6px_9px_rgba(0,0,0,0.15)]">
         <PlusIcon className="text-white" />
       </div>
     </main>

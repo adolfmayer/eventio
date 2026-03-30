@@ -72,11 +72,11 @@ export function LoginForm() {
   return (
     <form className="mt-[48px] w-full lg:mt-[80px]" onSubmit={onSubmit}>
       <label className="block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Email
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="email"
           autoComplete="email"
           value={state.email}
@@ -87,12 +87,12 @@ export function LoginForm() {
       </label>
 
       <label className="mt-10 block lg:mt-8">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Password
         </span>
         <div className="relative mt-2 h-8">
           <input
-            className="h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 pr-8 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+            className="h-8 w-full border-0 border-b border-stroke bg-transparent px-0 pr-8 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
             type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             value={state.password}
@@ -107,7 +107,7 @@ export function LoginForm() {
             aria-label={showPassword ? 'Hide password' : 'Show password'}
             onClick={() => setShowPassword((v) => !v)}
             className={cn(
-              'absolute right-0 top-0 inline-flex h-6 w-6 items-center justify-center rounded-full text-[#E1E4E6] transition',
+              'absolute right-0 top-0 inline-flex h-6 w-6 items-center justify-center rounded-full text-stroke transition',
               showPassword
                 ? 'bg-brand/10 text-brand'
                 : ''
@@ -120,13 +120,13 @@ export function LoginForm() {
       <div className="mt-4 text-right">
         <Link
           href="/forgot-password"
-          className="text-[14px] leading-6 text-[#949EA8] hover:text-text hover:underline"
+          className="text-[14px] leading-6 text-muted hover:text-text hover:underline"
         >
           Forgot password?
         </Link>
       </div>
 
-      <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3] lg:hidden">
+      <p className="mt-8 text-center text-[14px] leading-6 text-muted lg:hidden">
         Don&apos;t have account?
         <Link
           href="/signup"

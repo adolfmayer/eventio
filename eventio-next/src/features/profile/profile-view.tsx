@@ -102,7 +102,7 @@ function SmallActionButton({
   const byKind: Record<typeof kind, string> = {
     join: 'bg-brand text-white hover:bg-brandStrong',
     leave: 'bg-danger text-white hover:bg-dangerStrong',
-    edit: 'bg-[#D9DCE1] text-[#A9AEB4] hover:bg-[#C4C9D1]',
+    edit: 'bg-surfaceAlt text-muted hover:bg-stroke',
   };
 
   return (
@@ -139,7 +139,7 @@ function EventCard({
 
   if (viewMode === 'list') {
     return (
-      <div className="relative w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+      <div className="relative w-full rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
         <Link
           href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
           className="absolute inset-0 z-0"
@@ -149,16 +149,16 @@ function EventCard({
           <p className="w-[220px] truncate text-[18px] leading-[48px] text-text">
             {event.title}
           </p>
-          <p className="hidden flex-1 truncate text-[16px] leading-6 text-[#949EA8] lg:block">
+          <p className="hidden flex-1 truncate text-[16px] leading-6 text-muted lg:block">
             {description}
           </p>
-          <p className="hidden w-[140px] truncate text-[14px] leading-6 text-[#7D7878] lg:block">
+          <p className="hidden w-[140px] truncate text-[14px] leading-6 text-muted lg:block">
             {event.authorName}
           </p>
-          <p className="hidden w-[180px] text-[14px] leading-6 text-[#CACDD0] lg:block">
+          <p className="hidden w-[180px] text-[14px] leading-6 text-muted lg:block">
             {formatCardDate(event.starts_at)}
           </p>
-          <p className="hidden w-[120px] text-[14px] leading-6 text-[#949EA8] lg:block">
+          <p className="hidden w-[120px] text-[14px] leading-6 text-muted lg:block">
             {capacityText}
           </p>
           <div className="relative z-10 ml-auto">
@@ -166,7 +166,7 @@ function EventCard({
               <Link
                 href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
               >
-                <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+                <Button className="h-8 w-[100px] rounded-[4px] bg-surfaceAlt text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-muted hover:bg-stroke">
                   Edit
                 </Button>
               </Link>
@@ -187,23 +187,23 @@ function EventCard({
   }
 
   return (
-    <div className="relative h-[296px] min-w-0 w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
+    <div className="relative h-[296px] min-w-0 w-full rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
       <Link
         href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
         className="absolute inset-0 z-0"
         aria-label={`Open ${event.title}`}
       />
       <div className="flex h-full flex-col p-6 lg:p-8">
-        <p className="text-[14px] leading-6 text-[#CACDD0]">
+        <p className="text-[14px] leading-6 text-muted">
           {formatCardDate(event.starts_at)}
         </p>
         <h2 className="mt-2 truncate text-[22px] leading-[48px] text-text">
           {event.title}
         </h2>
-        <p className="-mt-2 truncate text-[14px] leading-6 text-[#7D7878]">
+        <p className="-mt-2 truncate text-[14px] leading-6 text-muted">
           {event.authorName}
         </p>
-        <p className="mt-6 line-clamp-2 text-[16px] leading-6 text-[#949EA8]">
+        <p className="mt-6 line-clamp-2 text-[16px] leading-6 text-muted">
           {description}
         </p>
         <div className="relative z-10 mt-auto flex items-center justify-between pt-8">
@@ -215,7 +215,7 @@ function EventCard({
               height={24}
               aria-hidden="true"
             />
-            <p className="text-[14px] leading-6 text-[#949EA8]">
+            <p className="text-[14px] leading-6 text-muted">
               {capacityText}
             </p>
           </div>
@@ -223,7 +223,7 @@ function EventCard({
             <Link
               href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
             >
-              <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+              <Button className="h-8 w-[100px] rounded-[4px] bg-surfaceAlt text-[14px] leading-4 font-normal uppercase tracking-[1px] text-muted hover:bg-stroke">
                 Edit
               </Button>
             </Link>
@@ -248,7 +248,7 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
   const initials = getInitials(currentUser.fullName ?? currentUser.email);
 
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
         <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="flex items-center justify-between pt-2">
@@ -264,21 +264,21 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
           </header>
         </div>
         <div className="mx-auto w-full xl:max-w-[1200px]">
-          <section className="relative mt-10 rounded-[2px] bg-white pb-10 pt-16 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-            <div className="absolute left-1/2 top-0 flex h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#D9DCE1] text-[28px] font-semibold text-[#949EA8]">
+          <section className="relative mt-10 rounded-[2px] bg-surface pb-10 pt-16 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+            <div className="absolute left-1/2 top-0 flex h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-surfaceAlt text-[28px] font-semibold text-muted">
               {initials}
             </div>
-            <p className="text-center text-[18px] leading-[48px] text-[#323C46]">
+            <p className="text-center text-[18px] leading-[48px] text-text">
               {currentUser.fullName ?? '—'}
             </p>
-            <p className="-mt-3 text-center text-[14px] leading-6 text-[#949EA8]">
+            <p className="-mt-3 text-center text-[14px] leading-6 text-muted">
               {currentUser.email ?? '—'}
             </p>
           </section>
 
           <section className="mt-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-[22px] leading-[48px] text-[#323C46] sm:text-[28px]">
+              <h2 className="text-[22px] leading-[48px] text-text sm:text-[28px]">
                 My events
               </h2>
               <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
                 >
                   <GridIcon
                     className={cn(
-                      viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                      viewMode === 'grid' ? 'text-text' : 'text-stroke'
                     )}
                   />
                 </button>
@@ -302,7 +302,7 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
                 >
                   <ListIcon
                     className={cn(
-                      viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                      viewMode === 'list' ? 'text-text' : 'text-stroke'
                     )}
                   />
                 </button>
@@ -310,8 +310,8 @@ export function ProfileView({ currentUser, events }: ProfileViewProps) {
             </div>
 
             {events.length === 0 ? (
-              <div className="mt-4 rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
-                <p className="text-[16px] leading-6 text-[#949EA8]">
+              <div className="mt-4 rounded-[2px] bg-surface p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+                <p className="text-[16px] leading-6 text-muted">
                   No events
                 </p>
               </div>

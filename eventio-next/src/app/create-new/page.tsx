@@ -25,7 +25,7 @@ export default async function CreateNewPage({
       : '/dashboard';
 
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-8 pt-7">
         <header className="flex items-center justify-between">
           <Link href="/dashboard" aria-label="Eventio">
@@ -48,11 +48,11 @@ export default async function CreateNewPage({
           </Link>
         </header>
 
-        <section className="mx-auto mt-8 w-full max-w-[480px] rounded-[2px] bg-white px-4 py-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] sm:mt-[136px] sm:min-h-[608px] sm:px-8 sm:py-10">
-          <h1 className="text-center text-[22px] leading-[48px] text-[#323C46] sm:text-[28px]">
+        <section className="mx-auto mt-8 w-full max-w-[480px] rounded-[2px] bg-surface px-4 py-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] sm:mt-[136px] sm:min-h-[608px] sm:px-8 sm:py-10">
+          <h1 className="text-center text-[22px] leading-[48px] text-text sm:text-[28px]">
             Create new event
           </h1>
-          <p className="-mt-1 text-center text-[14px] leading-6 text-[#949EA8] sm:text-[18px]">
+          <p className="-mt-1 text-center text-[14px] leading-6 text-muted sm:text-[18px]">
             Enter details below.
           </p>
 

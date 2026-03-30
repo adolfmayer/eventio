@@ -98,7 +98,7 @@ export default async function DashboardDetailPage({
   const detailId = event.id.slice(0, 6).toUpperCase();
 
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
         <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="relative flex items-center justify-between pt-2">
@@ -130,23 +130,23 @@ export default async function DashboardDetailPage({
           </header>
         </div>
         <div className="mx-auto w-full xl:max-w-[1200px]">
-          <p className="mt-10 text-[12px] uppercase tracking-[1px] text-[#A9AEB4]">
+          <p className="mt-10 text-[12px] uppercase tracking-[1px] text-muted">
             DETAIL EVENT: #{detailId}
           </p>
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
-            <article className="min-h-[296px] min-w-0 rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+            <article className="min-h-[296px] min-w-0 rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
               <div className="flex h-full min-w-0 flex-col p-6 lg:p-8">
-                <p className="text-[14px] leading-6 text-[#CACDD0]">
+                <p className="text-[14px] leading-6 text-muted">
                   {new Date(event.starts_at).toLocaleString()}
                 </p>
                 <h1 className="mt-2 break-all text-[22px] leading-[48px] text-text lg:text-[45px] lg:leading-[48px]">
                   {event.title}
                 </h1>
-                <p className="-mt-2 text-[14px] leading-6 text-[#7D7878]">
+                <p className="-mt-2 text-[14px] leading-6 text-muted">
                   {authorName}
                 </p>
-                <p className="mt-6 wrap-break-word text-[16px] leading-6 text-[#949EA8]">
+                <p className="mt-6 wrap-break-word text-[16px] leading-6 text-muted">
                   {event.description ?? '—'}
                 </p>
                 {params.error ? (
@@ -164,7 +164,7 @@ export default async function DashboardDetailPage({
                       height={24}
                       aria-hidden="true"
                     />
-                    <p className="text-[14px] leading-6 text-[#949EA8]">
+                    <p className="text-[14px] leading-6 text-muted">
                       {capacityText}
                     </p>
                   </div>
@@ -173,7 +173,7 @@ export default async function DashboardDetailPage({
                     <Link
                       href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
                     >
-                      <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+                      <Button className="h-8 w-[100px] rounded-[4px] bg-surfaceAlt text-[14px] leading-4 font-normal uppercase tracking-[1px] text-muted hover:bg-stroke">
                         Edit
                       </Button>
                     </Link>
@@ -196,7 +196,7 @@ export default async function DashboardDetailPage({
               </div>
             </article>
 
-            <aside className="h-[216px] rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px]">
+            <aside className="h-[216px] rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px]">
               <div className="p-6 lg:p-8">
                 <h2 className="text-[22px] leading-8 text-text">Attendees</h2>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -206,15 +206,15 @@ export default async function DashboardDetailPage({
                         key={attendee.id}
                         className={
                           attendee.isCurrentUser
-                            ? 'rounded-full border-2 border-[#D9DCE1] px-4 text-[13px] leading-[28px] text-[#949EA8]'
-                            : 'rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]'
+                            ? 'rounded-full border-2 border-stroke px-4 text-[13px] leading-[28px] text-muted'
+                            : 'rounded-full bg-surfaceAlt px-4 text-[13px] leading-8 text-muted'
                         }
                       >
                         {attendee.label}
                       </span>
                     ))
                   ) : (
-                    <span className="rounded-full bg-[#D9DCE1] px-4 text-[13px] leading-8 text-[#949EA8]">
+                    <span className="rounded-full bg-surfaceAlt px-4 text-[13px] leading-8 text-muted">
                       No attendees yet
                     </span>
                   )}
@@ -227,7 +227,7 @@ export default async function DashboardDetailPage({
 
       <Link
         href={`/create-new?from=${encodeURIComponent(`/dashboard-detail?id=${event.id}`)}`}
-        className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-[#565D5A]"
+        className="fixed bottom-8 right-8 inline-flex h-14 w-14 items-center justify-center rounded-full bg-text shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-text/90"
         aria-label="Create new event"
       >
         <svg

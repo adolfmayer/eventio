@@ -61,11 +61,11 @@ export function ForgotPasswordForm() {
   return (
     <form className="mt-[48px] w-full lg:mt-[64px]" onSubmit={onSubmit} noValidate>
       <label className="block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Email
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="email"
           autoComplete="email"
           value={state.email}
@@ -75,7 +75,7 @@ export function ForgotPasswordForm() {
       </label>
 
       {state.successMessage ? (
-        <p className="mt-6 text-[14px] leading-6 text-[#2E7D32]">{state.successMessage}</p>
+        <p className="mt-6 text-[14px] leading-6 text-brandStrong">{state.successMessage}</p>
       ) : null}
       {state.errorMessage ? (
         <p className="mt-6 text-[14px] leading-6 text-danger">{state.errorMessage}</p>
@@ -89,7 +89,7 @@ export function ForgotPasswordForm() {
         {state.isSubmitting ? "Sending..." : "Send reset link"}
       </Button>
 
-      <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3]">
+      <p className="mt-8 text-center text-[14px] leading-6 text-muted">
         Remembered your password?
         <Link href="/login" className="ml-1 font-semibold tracking-[1px] text-text hover:underline">
           SIGN IN

@@ -150,7 +150,7 @@ function SmallActionButton({
   const byKind: Record<typeof kind, string> = {
     join: 'bg-brand text-white hover:bg-brandStrong',
     leave: 'bg-danger text-white hover:bg-dangerStrong',
-    edit: 'bg-[#D9DCE1] text-[#A9AEB4] hover:bg-[#C4C9D1]',
+    edit: 'bg-surfaceAlt text-muted hover:bg-stroke',
   };
 
   return (
@@ -190,7 +190,7 @@ function EventCard({
 
   if (viewMode === 'list') {
     return (
-      <div className="relative w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+      <div className="relative w-full rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
         <Link
           href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
           className="absolute inset-0 z-0"
@@ -200,16 +200,16 @@ function EventCard({
           <p className="w-[220px] truncate text-[18px] leading-[48px] text-text">
             {event.title}
           </p>
-          <p className="hidden flex-1 truncate text-[16px] leading-6 text-[#949EA8] lg:block">
+          <p className="hidden flex-1 truncate text-[16px] leading-6 text-muted lg:block">
             {description}
           </p>
-          <p className="hidden w-[140px] truncate text-[14px] font-normal leading-6 text-[#7D7878] lg:block">
+          <p className="hidden w-[140px] truncate text-[14px] font-normal leading-6 text-muted lg:block">
             {event.authorName}
           </p>
-          <p className="hidden w-[160px] text-[14px] leading-6 text-[#CACDD0] lg:block">
+          <p className="hidden w-[160px] text-[14px] leading-6 text-muted lg:block">
             {dateText}
           </p>
-          <p className="hidden w-[120px] text-[14px] leading-6 text-[#949EA8] lg:block">
+          <p className="hidden w-[120px] text-[14px] leading-6 text-muted lg:block">
             {capacityText}
           </p>
 
@@ -218,7 +218,7 @@ function EventCard({
               <Link
                 href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
               >
-                <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+                <Button className="h-8 w-[100px] rounded-[4px] bg-surfaceAlt text-[14px] leading-[14px] font-normal uppercase tracking-[1px] text-muted hover:bg-stroke">
                   Edit
                 </Button>
               </Link>
@@ -240,23 +240,23 @@ function EventCard({
 
   // grid
   return (
-    <div className="relative h-[296px] min-w-0 w-full rounded-[2px] bg-white shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
+    <div className="relative h-[296px] min-w-0 w-full rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] xl:w-[390px]">
       <Link
         href={`/dashboard-detail?id=${encodeURIComponent(event.id)}`}
         className="absolute inset-0 z-0"
         aria-label={`Open ${event.title}`}
       />
       <div className="flex h-full flex-col p-8">
-        <p className="text-[14px] font-normal leading-6 text-[#CACDD0]">
+        <p className="text-[14px] font-normal leading-6 text-muted">
           {dateText}
         </p>
         <h2 className="mt-2 truncate text-[22px] font-normal leading-[48px] text-text">
           {event.title}
         </h2>
-        <p className="-mt-2 truncate text-[14px] font-normal leading-6 text-[#7D7878]">
+        <p className="-mt-2 truncate text-[14px] font-normal leading-6 text-muted">
           {event.authorName}
         </p>
-        <p className="mt-6 line-clamp-2 text-[16px] font-normal leading-6 text-[#949EA8]">
+        <p className="mt-6 line-clamp-2 text-[16px] font-normal leading-6 text-muted">
           {description}
         </p>
 
@@ -269,7 +269,7 @@ function EventCard({
               height={24}
               aria-hidden="true"
             />
-            <p className="text-[14px] font-normal leading-6 text-[#949EA8]">
+            <p className="text-[14px] font-normal leading-6 text-muted">
               {capacityText}
             </p>
           </div>
@@ -278,7 +278,7 @@ function EventCard({
             <Link
               href={`/dashboard-detail-edit?id=${encodeURIComponent(event.id)}`}
             >
-              <Button className="h-8 w-[100px] rounded-[4px] bg-[#D9DCE1] text-[14px] leading-4 font-normal uppercase tracking-[1px] text-[#A9AEB4] hover:bg-[#C4C9D1]">
+              <Button className="h-8 w-[100px] rounded-[4px] bg-surfaceAlt text-[14px] leading-4 font-normal uppercase tracking-[1px] text-muted hover:bg-stroke">
                 Edit
               </Button>
             </Link>
@@ -363,7 +363,7 @@ export function DashboardView({
   }, [events, filterMode, now]);
 
   return (
-    <main className="min-h-screen bg-[#F9F9FB]">
+    <main className="min-h-screen bg-bg">
       <div className="mx-auto w-full max-w-[1440px] px-6 pb-24 pt-6">
         <div className="mx-auto w-full xl:max-w-[1360px]">
           <header className="flex items-center justify-between pt-2">
@@ -390,8 +390,8 @@ export function DashboardView({
                 onClick={() => setFilterOpen((v) => !v)}
               >
                 <span className="text-[12px] leading-6 tracking-[1px] uppercase">
-                  <span className="text-[#A9AEB4]">SHOW:</span>{' '}
-                  <span className="text-[#323C46]">
+                  <span className="text-muted">SHOW:</span>{' '}
+                  <span className="text-text">
                     {FILTER_LABELS[filterMode]}
                   </span>
                 </span>
@@ -407,7 +407,7 @@ export function DashboardView({
               {filterOpen ? (
                 <div
                   role="menu"
-                  className="absolute left-0 top-full z-50 mt-2 w-[162px] rounded-[14px] bg-white py-1 shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
+                  className="absolute left-0 top-full z-50 mt-2 w-[162px] rounded-[14px] bg-surface py-1 shadow-[0px_5px_15px_rgba(0,0,0,0.198087)]"
                 >
                   {(['all', 'future', 'past'] as const).map((mode) => (
                     <button
@@ -417,8 +417,8 @@ export function DashboardView({
                       className={cn(
                         'block w-full px-4 py-3 text-left text-[12px] leading-6 tracking-[1px] uppercase hover:bg-surfaceAlt',
                         mode === filterMode
-                          ? 'text-[#323C46]'
-                          : 'text-[#A9AEB4]'
+                          ? 'text-text'
+                          : 'text-muted'
                       )}
                       onClick={() => {
                         setFilterMode(mode);
@@ -438,7 +438,7 @@ export function DashboardView({
                 onClick={() => setFilterMode('all')}
                 className={cn(
                   'text-[12px] leading-6 tracking-[1px] uppercase',
-                  filterMode === 'all' ? 'text-text' : 'text-[#A9AEB4]'
+                  filterMode === 'all' ? 'text-text' : 'text-muted'
                 )}
               >
                 ALL EVENTS
@@ -448,7 +448,7 @@ export function DashboardView({
                 onClick={() => setFilterMode('future')}
                 className={cn(
                   'text-[12px] leading-6 tracking-[1px] uppercase',
-                  filterMode === 'future' ? 'text-text' : 'text-[#A9AEB4]'
+                  filterMode === 'future' ? 'text-text' : 'text-muted'
                 )}
               >
                 FUTURE EVENTS
@@ -458,7 +458,7 @@ export function DashboardView({
                 onClick={() => setFilterMode('past')}
                 className={cn(
                   'text-[12px] leading-6 tracking-[1px] uppercase',
-                  filterMode === 'past' ? 'text-text' : 'text-[#A9AEB4]'
+                  filterMode === 'past' ? 'text-text' : 'text-muted'
                 )}
               >
                 PAST EVENTS
@@ -474,7 +474,7 @@ export function DashboardView({
               >
                 <GridIcon
                   className={cn(
-                    viewMode === 'grid' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                    viewMode === 'grid' ? 'text-text' : 'text-stroke'
                   )}
                 />
               </button>
@@ -486,7 +486,7 @@ export function DashboardView({
               >
                 <ListIcon
                   className={cn(
-                    viewMode === 'list' ? 'text-[#323C46]' : 'text-[#D9DCE1]'
+                    viewMode === 'list' ? 'text-text' : 'text-stroke'
                   )}
                 />
               </button>
@@ -495,7 +495,7 @@ export function DashboardView({
 
           <section className="mt-10">
             {errorMessage ? (
-              <div className="rounded-[2px] bg-white p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
+              <div className="rounded-[2px] bg-surface p-6 shadow-[0px_2px_3px_rgba(0,0,0,0.108696)]">
                 <p className="text-sm text-dangerStrong">{errorMessage}</p>
               </div>
             ) : null}
@@ -529,7 +529,7 @@ export function DashboardView({
 
       <Link
         href="/create-new?from=/dashboard"
-        className="fixed bottom-8 right-8 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#323C46] shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-[#565D5A]"
+        className="fixed bottom-8 right-8 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-text shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-text/90"
         aria-label="Create new event"
       >
         <PlusIcon className="text-white" />

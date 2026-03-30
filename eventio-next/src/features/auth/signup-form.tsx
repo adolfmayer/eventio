@@ -248,22 +248,22 @@ export function SignupForm() {
         <h2 className="text-[22px] font-normal leading-[48px] text-text lg:text-[28px]">
           Check your email
         </h2>
-        <p className="text-[14px] leading-6 text-[#949EA8] lg:text-[18px]">
+        <p className="text-[14px] leading-6 text-muted lg:text-[18px]">
           We sent a verification link to{" "}
           <span className="font-semibold text-text">
             {state.submittedEmail ?? "your email"}
           </span>
           .
         </p>
-        <p className="mt-2 text-[14px] leading-6 text-[#949EA8] lg:text-[16px]">
+        <p className="mt-2 text-[14px] leading-6 text-muted lg:text-[16px]">
           Open the email and click the link to activate your account.
         </p>
-        <p className="mt-4 text-[14px] leading-6 text-[#949EA8] lg:text-[16px]">
+        <p className="mt-4 text-[14px] leading-6 text-muted lg:text-[16px]">
           Can&apos;t find it? Check your spam, promotions, or social folders.
         </p>
 
         {state.successMessage ? (
-          <p className="mt-4 text-[14px] leading-6 text-[#2E7D32]">
+          <p className="mt-4 text-[14px] leading-6 text-brandStrong">
             {state.successMessage}
           </p>
         ) : null}
@@ -283,7 +283,7 @@ export function SignupForm() {
         </Button>
 
         <Button
-          className="mt-4 h-[57px] w-full rounded-[4px] border border-[#DAE1E7] bg-transparent text-[16px] font-normal uppercase tracking-[1px] text-text hover:bg-[#F6F7F9]"
+          className="mt-4 h-[57px] w-full rounded-[4px] border border-stroke bg-transparent text-[16px] font-normal uppercase tracking-[1px] text-text hover:bg-surfaceAlt"
           type="button"
           onClick={() => {
             router.push("/login");
@@ -299,11 +299,11 @@ export function SignupForm() {
   return (
     <form className="mt-[48px] w-full lg:mt-[64px]" onSubmit={onSubmit} noValidate>
       <label className="block">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           First name
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="text"
           value={state.firstName}
           onChange={(e) =>
@@ -320,11 +320,11 @@ export function SignupForm() {
       </label>
 
       <label className="mt-10 block lg:mt-8">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Last name
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="text"
           value={state.lastName}
           onChange={(e) => setState((s) => ({ ...s, lastName: e.target.value }))}
@@ -339,11 +339,11 @@ export function SignupForm() {
       </label>
 
       <label className="mt-10 block lg:mt-8">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Email
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="email"
           value={state.email}
           onChange={(e) => setState((s) => ({ ...s, email: e.target.value }))}
@@ -358,11 +358,11 @@ export function SignupForm() {
       </label>
 
       <label className="mt-10 block lg:mt-8">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Password
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="password"
           value={state.password}
           onChange={(e) => setState((s) => ({ ...s, password: e.target.value }))}
@@ -378,11 +378,11 @@ export function SignupForm() {
       </label>
 
       <label className="mt-10 block lg:mt-8">
-        <span className="text-[16px] leading-6 text-[#C9CED3] lg:text-[18px]">
+        <span className="text-[16px] leading-6 text-muted lg:text-[18px]">
           Repeat password
         </span>
         <input
-          className="mt-2 h-8 w-full border-0 border-b border-[#DAE1E7] bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-[#D2D6DA] focus:border-text lg:text-[18px]"
+          className="mt-2 h-8 w-full border-0 border-b border-stroke bg-transparent px-0 text-[16px] leading-6 text-text outline-none transition placeholder:text-muted focus:border-text lg:text-[18px]"
           type="password"
           value={state.repeatPassword}
           onChange={(e) =>
@@ -398,7 +398,7 @@ export function SignupForm() {
         ) : null}
       </label>
 
-      <p className="mt-8 text-center text-[14px] leading-6 text-[#C9CED3] lg:hidden">
+      <p className="mt-8 text-center text-[14px] leading-6 text-muted lg:hidden">
         Already have an account?
         <Link
           href="/login"

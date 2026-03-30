@@ -31,7 +31,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${eventioSans.variable} ${eventioSerif.variable} h-full antialiased`}
+      data-theme="light"
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var key='eventio.theme';var raw=localStorage.getItem(key);var theme=(raw==='dark'||raw==='light')?raw:'light';document.documentElement.dataset.theme=theme;}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col text-text">{children}</body>
     </html>
   );
