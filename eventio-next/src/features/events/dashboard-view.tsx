@@ -532,7 +532,7 @@ export function DashboardView({
         className="fixed bottom-8 right-8 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-text shadow-[0px_6px_9px_rgba(0,0,0,0.15)] hover:bg-text/90"
         aria-label="Create new event"
       >
-        <PlusIcon className="text-white" />
+        <PlusIcon className="text-bg" />
       </Link>
     </main>
   );

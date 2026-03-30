@@ -37,7 +37,7 @@ export default async function SignUpPage() {
 
   return (
     <main className="min-h-screen bg-bg">
-      <aside className="fixed left-0 top-0 hidden h-screen w-[480px] overflow-hidden bg-text lg:block">
+      <aside className="fixed left-0 top-0 hidden h-screen w-[480px] overflow-hidden bg-[#323C46] lg:block">
         <div className="absolute inset-0">
           <Image
             src="/eventio/auth/login-hero.avif"

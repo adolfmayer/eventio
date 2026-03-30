@@ -237,7 +237,7 @@ export default async function DashboardDetailPage({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
-          className="text-white"
+          className="text-bg"
         >
           <path
             fillRule="evenodd"
