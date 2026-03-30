@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Hind, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
+import { SonnerToaster } from "@/components/sonner-toaster";
+import { ToastBridge } from "@/components/toast-bridge";
+
 const eventioSans = Hind({
   variable: "--font-eventio-sans",
   subsets: ["latin"],
@@ -41,7 +44,11 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col text-text">{children}</body>
+      <body className="min-h-full flex flex-col text-text">
+        <SonnerToaster />
+        <ToastBridge />
+        {children}
+      </body>
     </html>
   );
 }

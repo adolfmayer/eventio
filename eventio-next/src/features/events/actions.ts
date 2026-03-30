@@ -53,7 +53,7 @@ export async function createEventAction(formData: FormData) {
     );
   }
 
-  redirect(`/dashboard-detail?id=${encodeURIComponent(data.id)}`);
+  redirect(`/dashboard-detail?id=${encodeURIComponent(data.id)}&toast=created`);
 }
 
 export async function joinEventAction(formData: FormData) {
@@ -74,7 +74,7 @@ export async function joinEventAction(formData: FormData) {
     redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}&error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}&toast=joined`);
 }
 
 export async function leaveEventAction(formData: FormData) {
@@ -95,7 +95,7 @@ export async function leaveEventAction(formData: FormData) {
     redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}&error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}&toast=left`);
 }
 
 export async function updateEventAction(formData: FormData) {
@@ -201,6 +201,6 @@ export async function deleteEventAction(formData: FormData) {
     );
   }
 
-  redirect("/dashboard");
+  redirect("/dashboard?toast=deleted");
 }
 
