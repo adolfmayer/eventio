@@ -166,7 +166,7 @@ export async function updateEventAction(formData: FormData) {
     return { ok: false, error: error.message } satisfies UpdateEventActionResult;
   }
 
-  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}`);
+  redirect(`/dashboard-detail?id=${encodeURIComponent(eventId)}&toast=edited`);
 }
 
 export async function deleteEventAction(formData: FormData) {

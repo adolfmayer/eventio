@@ -4,12 +4,13 @@ import * as React from "react";
 import { toast } from "sonner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-type ToastKey = "joined" | "left" | "created" | "deleted";
+type ToastKey = "joined" | "left" | "created" | "edited" | "deleted";
 
 const SUCCESS_BY_KEY: Record<ToastKey, string> = {
   joined: "Successfully joined - enjoy the event.",
   left: "You left the event.",
   created: "Event successfully created.",
+  edited: "Event successfully edited.",
   deleted: "You deleted the event.",
 };
 
@@ -26,6 +27,7 @@ export function ToastBridge() {
       toastKeyRaw === "joined" ||
       toastKeyRaw === "left" ||
       toastKeyRaw === "created" ||
+      toastKeyRaw === "edited" ||
       toastKeyRaw === "deleted"
         ? toastKeyRaw
         : null;
