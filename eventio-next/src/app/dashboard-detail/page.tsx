@@ -180,14 +180,20 @@ export default async function DashboardDetailPage({
                   ) : isJoined ? (
                     <form action={leaveEventAction}>
                       <input type="hidden" name="eventId" value={event.id} />
-                      <Button className="h-8 w-[100px] rounded-[4px] bg-danger text-[14px] leading-4 font-normal uppercase tracking-[1px] text-white hover:bg-dangerStrong">
+                      <Button
+                        type="submit"
+                        className="h-8 w-[100px] rounded-[4px] bg-danger text-[14px] leading-4 font-normal uppercase tracking-[1px] text-white hover:bg-dangerStrong"
+                      >
                         Leave
                       </Button>
                     </form>
                   ) : (
                     <form action={joinEventAction}>
                       <input type="hidden" name="eventId" value={event.id} />
-                      <Button className="h-8 w-[100px] rounded-[4px] bg-brand text-[14px] leading-4 font-normal uppercase tracking-[1px] text-white hover:bg-brandStrong">
+                      <Button
+                        type="submit"
+                        className="h-8 w-[100px] rounded-[4px] bg-brand text-[14px] leading-4 font-normal uppercase tracking-[1px] text-white hover:bg-brandStrong"
+                      >
                         Join
                       </Button>
                     </form>
