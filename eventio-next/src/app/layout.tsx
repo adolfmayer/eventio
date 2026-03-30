@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Hind, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
+import { Suspense } from "react";
+
 import { SonnerToaster } from "@/components/sonner-toaster";
 import { ToastBridge } from "@/components/toast-bridge";
 
@@ -46,7 +48,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col text-text">
         <SonnerToaster />
-        <ToastBridge />
+        <Suspense fallback={null}>
+          <ToastBridge />
+        </Suspense>
         {children}
       </body>
     </html>
