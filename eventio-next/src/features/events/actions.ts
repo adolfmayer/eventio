@@ -30,8 +30,8 @@ export async function createEventAction(formData: FormData) {
     title: getString(formData, "title"),
     date: getString(formData, "date"),
     time: getString(formData, "time"),
-    location: getString(formData, "location") || undefined,
-    description: getString(formData, "description") || undefined,
+    location: getString(formData, "location"),
+    description: getString(formData, "description"),
     capacity: getString(formData, "capacity") || undefined,
   });
 
@@ -119,8 +119,8 @@ export async function updateEventAction(formData: FormData) {
     title: getString(formData, "title"),
     date: getString(formData, "date"),
     time: getString(formData, "time"),
-    location: getString(formData, "location") || undefined,
-    description: getString(formData, "description") || undefined,
+    location: getString(formData, "location"),
+    description: getString(formData, "description"),
     capacity: getString(formData, "capacity") || undefined,
   });
 
