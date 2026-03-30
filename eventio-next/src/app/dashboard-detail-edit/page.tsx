@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { DashboardProfileMenu } from '@/components/shared/dashboard-profile-menu';
 import {
   deleteEventAction,
-  updateEventAction,
 } from '@/features/events/actions';
+import { EditEventForm } from '@/features/events/edit-event-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -60,7 +60,6 @@ export default async function DashboardDetailEditPage({
   const dateValue = startsAtDate.toISOString().slice(0, 10);
   const timeValue = startsAtDate.toISOString().slice(11, 16);
   const detailId = event.id.slice(0, 6).toUpperCase();
-  const paramsError = params.error;
 
   return (
     <main className="min-h-screen bg-bg">
@@ -119,96 +118,19 @@ export default async function DashboardDetailEditPage({
 
           <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,795px)_minmax(0,390px)] lg:gap-[17px]">
             <article className="rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:min-h-[464px]">
-              <form
-                id="edit-event-form"
-                action={updateEventAction}
-                className="p-6 lg:p-8"
-              >
-                <input type="hidden" name="eventId" value={event.id} />
-                {paramsError ? (
-                  <p className="mb-4 text-[14px] leading-6 text-danger">
-                    {paramsError}
-                  </p>
-                ) : null}
-                <label className="block">
-                  <span className="text-[14px] leading-6 text-muted">
-                    Date
-                  </span>
-                  <input
-                    name="date"
-                    type="date"
-                    defaultValue={dateValue}
-                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
-                    required
-                  />
-                </label>
-
-                <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-muted">
-                    Time
-                  </span>
-                  <input
-                    name="time"
-                    type="time"
-                    defaultValue={timeValue}
-                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
-                    required
-                  />
-                </label>
-
-                <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-muted">
-                    Title
-                  </span>
-                  <input
-                    name="title"
-                    type="text"
-                    defaultValue={event.title}
-                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
-                    required
-                    maxLength={120}
-                  />
-                </label>
-
-                <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-muted">
-                    Description
-                  </span>
-                  <input
-                    name="description"
-                    type="text"
-                    defaultValue={event.description ?? ''}
-                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
-                    maxLength={2000}
-                  />
-                </label>
-
-                <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-muted">
-                    Location
-                  </span>
-                  <input
-                    name="location"
-                    type="text"
-                    defaultValue={event.location ?? ''}
-                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
-                    maxLength={120}
-                  />
-                </label>
-
-                <label className="mt-6 block">
-                  <span className="text-[14px] leading-6 text-muted">
-                    Capacity
-                  </span>
-                  <input
-                    name="capacity"
-                    type="number"
-                    min={1}
-                    defaultValue={event.capacity ?? ''}
-                    className="mt-1 block h-8 w-full border-b border-stroke bg-transparent pb-2 text-[16px] leading-6 text-text outline-none"
-                  />
-                </label>
-              </form>
+              <EditEventForm
+                formId="edit-event-form"
+                eventId={event.id}
+                initialValues={{
+                  title: event.title,
+                  description: event.description ?? '',
+                  date: dateValue,
+                  time: timeValue,
+                  location: event.location ?? '',
+                  capacity: event.capacity === null ? '' : String(event.capacity),
+                }}
+                serverError={params.error}
+              />
             </article>
 
             <aside className="h-[216px] rounded-[2px] bg-surface shadow-[0px_2px_3px_rgba(0,0,0,0.108696)] lg:h-[296px]">

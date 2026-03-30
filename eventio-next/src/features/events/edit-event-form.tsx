@@ -5,17 +5,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { createEventAction } from "@/features/events/actions";
+import { updateEventAction } from "@/features/events/actions";
 import { createEventSchema } from "@/features/events/schemas";
 
-type CreateEventFormProps = {
-  from: string;
+type EditEventFormProps = {
+  formId: string;
+  eventId: string;
+  initialValues: {
+    title: string;
+    description: string;
+    date: string;
+    time: string;
+    location: string;
+    capacity: string;
+  };
   serverError?: string;
 };
 
-type CreateEventFormValues = z.input<typeof createEventSchema>;
+type EditEventFormValues = z.input<typeof createEventSchema>;
 
-export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
+export function EditEventForm({
+  formId,
+  eventId,
+  initialValues,
+  serverError,
+}: EditEventFormProps) {
   const [formError, setFormError] = React.useState<string | null>(serverError ?? null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -23,17 +37,10 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateEventFormValues, unknown, z.output<typeof createEventSchema>>({
+  } = useForm<EditEventFormValues, unknown, z.output<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
     mode: "onChange",
-    defaultValues: {
-      title: "",
-      description: "",
-      date: "",
-      time: "",
-      location: "",
-      capacity: "",
-    },
+    defaultValues: initialValues,
   });
 
   const onSubmit = React.useCallback(
@@ -42,7 +49,7 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
       setIsSubmitting(true);
 
       const formData = new FormData();
-      formData.set("from", from);
+      formData.set("eventId", eventId);
       formData.set("title", values.title);
       formData.set("description", values.description ?? "");
       formData.set("date", values.date);
@@ -51,7 +58,7 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
       formData.set("capacity", values.capacity === null ? "" : String(values.capacity));
 
       try {
-        const result = await createEventAction(formData);
+        const result = await updateEventAction(formData);
         if (!result.ok) {
           setFormError(result.error);
         }
@@ -61,20 +68,43 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
         setIsSubmitting(false);
       }
     },
-    [from],
+    [eventId],
   );
 
   const inputClass = (error?: string) =>
-    `mt-1 block h-8 w-full border-b bg-transparent text-[16px] leading-6 text-text outline-none ${
+    `mt-1 block h-8 w-full border-b bg-transparent pb-2 text-[16px] leading-6 text-text outline-none ${
       error ? "border-danger" : "border-stroke"
     }`;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-6" noValidate>
-      <input type="hidden" name="from" value={from} />
+    <form id={formId} onSubmit={handleSubmit(onSubmit)} className="p-6 lg:p-8" noValidate>
+      <input type="hidden" name="eventId" value={eventId} />
+      {formError ? <p className="mb-4 text-[14px] leading-6 text-danger">{formError}</p> : null}
 
       <label className="block">
-        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Title</span>
+        <span className="text-[14px] leading-6 text-muted">Date</span>
+        <input
+          type="date"
+          className={inputClass(errors.date?.message)}
+          aria-invalid={Boolean(errors.date)}
+          {...register("date")}
+        />
+        {errors.date ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.date.message}</p> : null}
+      </label>
+
+      <label className="mt-6 block">
+        <span className="text-[14px] leading-6 text-muted">Time</span>
+        <input
+          type="time"
+          className={inputClass(errors.time?.message)}
+          aria-invalid={Boolean(errors.time)}
+          {...register("time")}
+        />
+        {errors.time ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.time.message}</p> : null}
+      </label>
+
+      <label className="mt-6 block">
+        <span className="text-[14px] leading-6 text-muted">Title</span>
         <input
           type="text"
           className={inputClass(errors.title?.message)}
@@ -82,13 +112,11 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
           aria-invalid={Boolean(errors.title)}
           {...register("title")}
         />
-        {errors.title ? (
-          <p className="mt-2 text-[14px] leading-6 text-danger">{errors.title.message}</p>
-        ) : null}
+        {errors.title ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.title.message}</p> : null}
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Description</span>
+        <span className="text-[14px] leading-6 text-muted">Description</span>
         <textarea
           className={`mt-1 block min-h-24 w-full resize-y border-b bg-transparent py-2 text-[16px] leading-6 text-text outline-none ${
             errors.description ? "border-danger" : "border-stroke"
@@ -103,29 +131,7 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Date</span>
-        <input
-          type="date"
-          className={inputClass(errors.date?.message)}
-          aria-invalid={Boolean(errors.date)}
-          {...register("date")}
-        />
-        {errors.date ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.date.message}</p> : null}
-      </label>
-
-      <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Time</span>
-        <input
-          type="time"
-          className={inputClass(errors.time?.message)}
-          aria-invalid={Boolean(errors.time)}
-          {...register("time")}
-        />
-        {errors.time ? <p className="mt-2 text-[14px] leading-6 text-danger">{errors.time.message}</p> : null}
-      </label>
-
-      <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Location</span>
+        <span className="text-[14px] leading-6 text-muted">Location</span>
         <input
           type="text"
           className={inputClass(errors.location?.message)}
@@ -139,7 +145,7 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
       </label>
 
       <label className="mt-6 block">
-        <span className="text-[16px] leading-6 text-muted sm:text-[18px]">Capacity</span>
+        <span className="text-[14px] leading-6 text-muted">Capacity</span>
         <input
           type="number"
           min={1}
@@ -152,16 +158,9 @@ export function CreateEventForm({ from, serverError }: CreateEventFormProps) {
         ) : null}
       </label>
 
-      {formError ? <p className="mt-4 text-[14px] leading-6 text-danger">{formError}</p> : null}
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="mx-auto mt-8 block h-[57px] w-[240px] rounded-[4px] bg-[#22D486] text-[16px] leading-8 tracking-[1px] text-white uppercase hover:bg-[#1DBB76]"
-      >
-        {isSubmitting ? "CREATING..." : "CREATE NEW EVENT"}
+      <button type="submit" className="sr-only" disabled={isSubmitting}>
+        Save event
       </button>
     </form>
   );
 }
-
