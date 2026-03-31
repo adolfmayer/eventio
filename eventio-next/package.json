@@ -10,6 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "db:types": "node scripts/gen-supabase-types.mjs",
     "e2e:test": "playwright test",
+    "e2e:test:auth": "playwright test tests/e2e/auth-session.spec.ts",
     "e2e:test:ui": "playwright test --ui",
     "e2e:test:headed": "playwright test --headed",
     "e2e:report": "playwright show-report"
