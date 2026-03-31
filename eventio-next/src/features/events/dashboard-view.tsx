@@ -384,12 +384,12 @@ export function DashboardView({
             <div className="relative sm:hidden" ref={filterMenuRef}>
               <button
                 type="button"
-                className="inline-flex h-6 w-[139px] items-center justify-between"
+                className="inline-flex h-6 w-[156px] items-center justify-between"
                 aria-haspopup="menu"
                 aria-expanded={filterOpen}
                 onClick={() => setFilterOpen((v) => !v)}
               >
-                <span className="text-[12px] leading-6 tracking-[1px] uppercase">
+                <span className="whitespace-nowrap text-[12px] leading-6 tracking-[1px] uppercase">
                   <span className="text-muted">SHOW:</span>{' '}
                   <span className="text-text">
                     {FILTER_LABELS[filterMode]}
