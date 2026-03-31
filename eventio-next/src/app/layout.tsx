@@ -20,11 +20,22 @@ const eventioSerif = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
     default: "Eventio",
     template: "%s · Eventio",
   },
-  description: "A platform that allows registered users to sign up for and create events.",
+  description: "Discover, create, and join events with Eventio.",
+  openGraph: {
+    title: "Eventio",
+    description: "Discover, create, and join events with Eventio.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Eventio",
+    description: "Discover, create, and join events with Eventio.",
+  },
 };
 
 export default function RootLayout({
