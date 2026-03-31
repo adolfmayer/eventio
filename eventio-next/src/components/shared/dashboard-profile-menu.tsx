@@ -53,6 +53,7 @@ function getInitials(nameOrEmail: string | null) {
 export function DashboardProfileMenu({ fullName, email }: DashboardProfileMenuProps) {
   const [open, setOpen] = React.useState(false);
   const [theme, setTheme] = React.useState<ThemeMode>("light");
+  const menuRef = React.useRef<HTMLDivElement | null>(null);
   const nameOrEmail = fullName ?? email;
   const initials = getInitials(nameOrEmail);
 
@@ -63,8 +64,33 @@ export function DashboardProfileMenu({ fullName, email }: DashboardProfileMenuPr
     setThemeOnDom(next);
   }, []);
 
+  React.useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
