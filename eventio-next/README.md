@@ -34,3 +34,58 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Testing (Playwright E2E)
+
+Install browser binaries once:
+
+```bash
+npx playwright install chromium
+```
+
+Run auth/session flows:
+
+```bash
+npm run e2e:test:auth
+```
+
+Run core event flows (create, join/leave, owner edit/delete):
+
+```bash
+npm run e2e:test:events
+```
+
+Run all E2E tests:
+
+```bash
+npm run e2e:test
+```
+
+## E2E Environment Variables
+
+Copy `.env.e2e.example` values into `.env.local` for local runs:
+
+- `E2E_AUTH_EMAIL`
+- `E2E_AUTH_PASSWORD`
+- `E2E_OWNER_EMAIL` (optional fallback to `E2E_AUTH_EMAIL`)
+- `E2E_OWNER_PASSWORD` (optional fallback to `E2E_AUTH_PASSWORD`)
+- `E2E_ATTENDEE_EMAIL` (required for join/leave test)
+- `E2E_ATTENDEE_PASSWORD` (required for join/leave test)
+
+## CI (GitHub Actions)
+
+E2E CI workflow is at `.github/workflows/e2e.yml`.
+
+Required GitHub repository secrets:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `E2E_AUTH_EMAIL`
+- `E2E_AUTH_PASSWORD`
+- `E2E_OWNER_EMAIL`
+- `E2E_OWNER_PASSWORD`
+- `E2E_ATTENDEE_EMAIL`
+- `E2E_ATTENDEE_PASSWORD`
+
+The workflow uploads `playwright-report/` and `test-results/` as artifacts on every E2E run.
