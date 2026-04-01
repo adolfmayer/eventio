@@ -68,7 +68,7 @@ export const config = {
      * - favicon.ico (favicon file)
      * - images (public assets)
      */
-    "/((?!_next/static|_next/image|favicon.ico|images).*)",
+    "/((?!_next/static|_next/image|_next/webpack-hmr|favicon.ico|images).*)",
   ],
 };
 
